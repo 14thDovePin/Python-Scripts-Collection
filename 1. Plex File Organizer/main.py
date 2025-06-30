@@ -44,9 +44,16 @@ def main():
         else:
             print("Invalid Type!")
 
-    print("success")
-    print(media_directory)
-    print(media_type)
+    # Walk through directory
+    # Cleanup filename/s
+
+    # Extract title metadata from OMDb
+    if media_type == "1":
+        pass
+
+    # Extract series title from IMDb
+    elif media_type == "2":
+        pass
 
 
 if __name__ == "__main__":
