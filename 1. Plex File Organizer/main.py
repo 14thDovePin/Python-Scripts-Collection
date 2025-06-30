@@ -13,10 +13,42 @@ Below is the script's procedure. (may change as the script is developed)
 5. Rename all media files.
 """
 
+import os
+
+
+# Format Console
+os.system("title Plex File Organizer && color a")
+
 
 def main():
-    pass
+    os.system("cls")
+
+    # Prompt user for the movie/series directory & its type.
+    while True:
+        media_directory = input("Enter Media Directory: ")
+
+        if not os.path.exists(media_directory):
+            print("Invalid Directory!")
+        else:
+            break
+
+    print("\nMedia Type")
+    print("1 -> Movie")
+    print("2 -> Series\n")
+
+    while True:
+        media_type = input("Enter Type: ")
+
+        if media_type == "1" or media_type == "2":
+            break
+        else:
+            print("Invalid Type!")
+
+    print("success")
+    print(media_directory)
+    print(media_type)
 
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()

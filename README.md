@@ -4,3 +4,5 @@ This repository is the collection of scripts I have made for my personal use cas
 Each script should have a folder of its own and a `main.py` file to execute it. File names should only vary in special circumstances.  Inside every `main.py` should also be the description of *what* the script is for and *why* the script was made. Coding conventions of my knowledge will apply and overtime will improve as I gain more experience.
 
 That's all!
+## Script Tracking
+1. Plex File Organizer
