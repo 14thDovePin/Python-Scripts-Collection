@@ -44,8 +44,15 @@ def main():
         else:
             print("Invalid Type!")
 
-    # Walk through directory
-    # Cleanup filename/s
+    # Extract file names.
+    file_names = []
+    for _, _, files in os.walk(media_directory):
+        file_names = files
+        break
+
+    # Cleanup Filename/s
+    # Divide Letters by Spaces & Periods
+
 
     # Extract title metadata from OMDb
     if media_type == "1":
