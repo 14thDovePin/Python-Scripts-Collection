@@ -26,16 +26,18 @@ VE = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov',
 
 def grab_sample_filenames():
     """Return 50 samples each of movie & tv show file names."""
+    sample_filenames = []
     driver = webdriver.Chrome()
 
-    # Get the Movie's page links.
+    # Process movie file names.
     page_links = get_page_links(driver, website.movies())
-
-    # Grab each of the movie's item links.
     movie_links = grab_item_links(driver, page_links)
+    sample_filenames += grab_filenames(driver, movie_links)
 
-    # Loop through each Movie Links & get the Sample File Names.
-    sample_filenames = grab_filenames(driver, movie_links)
+    # Process series file names.
+    page_links = get_page_links(driver, website.tv_shows())
+    show_links = grab_item_links(driver, page_links)
+    sample_filenames += grab_filenames(driver, show_links)
 
     print("\n\nSAMPLE FILENAMES:")
     for filename in sample_filenames: print(filename)
@@ -125,6 +127,11 @@ def grab_filenames(driver: webdriver, page_links: list) -> list:
 
         # Pull Filename information.
         for filename in filename_elements:
+
+            # Limit filenames.
+            if len(filenames) == limit:
+                break
+
             # Filter filename.
             for extension in VE:
                 if '.' + extension in filename.text:
