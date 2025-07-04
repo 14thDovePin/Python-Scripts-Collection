@@ -21,24 +21,11 @@ def grab_sample_filenames():
     """Return 50 samples each of movie & tv show file names."""
     driver = webdriver.Chrome()
 
-    # Get Page Links
+    # Get the Movie's page links.
     page_links = get_page_links(driver, website.movies())
 
-    # Loop Through Web Pages & Get Links
-    movie_links = []
-    for page in page_links:
-        driver.get(page)
-
-        # Grab Movie Links
-        movies_elements = driver.find_elements(
-            By.XPATH,
-            # "//th[@class='coll-1 name']"
-            "//div[@class='featured-list']//div//table//tbody//tr//td//a[2]"
-        )
-
-        for movie_element in movies_elements:
-            href = movie_element.get_attribute('href')
-            movie_links.append(href)
+    # Grab each of the movie's item links.
+    movie_links = grab_item_links(driver, page_links)
 
     # Loop through each Movie Links & get the Sample File Names.
     for movie_link in movie_links:
@@ -57,15 +44,17 @@ def grab_sample_filenames():
     driver.close()
 
 
-def get_page_links(driver: webdriver, link: str) -> list:
+def get_page_links(driver: webdriver, page: str) -> list:
     """Return the pages web links on a given link."""
-    driver.get(link)
+    driver.get(page)
 
+    # Grab the element containing the pages.
     page_list_elements = driver.find_elements(
         By.XPATH,
         "//div[@class='pagination']//ul//li//a"
     )
 
+    # Extract the hrefs.
     page_links = [i.get_attribute('href') for i in page_list_elements][:-2]
 
     if TEST_MODE:
@@ -73,6 +62,29 @@ def get_page_links(driver: webdriver, link: str) -> list:
 
     return page_links
 
+
+def grab_item_links(driver: webdriver, page_links: list) -> list:
+    """Return the list of the item's links from a given page."""
+    links = []
+
+    # Loop through each pages.
+    for page in page_links:
+        driver.get(page)
+
+        # Grab Each Item
+        item_elements = driver.find_elements(
+            By.XPATH,
+            "//div[@class='featured-list']//div//table//tbody//tr//td//a[2]"
+        )
+
+        for item_element in item_elements:
+            href = item_element.get_attribute('href')
+            links.append(href)
+
+    if TEST_MODE:
+        links = links[:1]
+
+    return links
 
 
 if __name__ == "__main__":
