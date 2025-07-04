@@ -35,36 +35,11 @@ def grab_sample_filenames():
     movie_links = grab_item_links(driver, page_links)
 
     # Loop through each Movie Links & get the Sample File Names.
-    sample_filenames = []
-    for movie_link in movie_links:
-        driver.get(movie_link)
+    sample_filenames = grab_filenames(driver, movie_links)
 
-        # Navigate to the Files information.
-        file_tab_element = driver.find_element(
-            By.XPATH,
-            "//div[@class='torrent-tabs']//ul//li[2]//a"
-        )
-
-        file_tab_element.click()
-
-        file_information_element = driver.find_element(
-            By.XPATH,
-            "//div[@id='files']"
-        )
-
-        filename_elements = file_information_element.find_elements(
-            By.TAG_NAME,
-            'li'
-        )
-
-        # Pull Filename information.
-        for filename in filename_elements:
-            # Filter filename.
-            for extension in VE:
-                if '.' + extension in filename.text:
-                    sample_filenames.append(filename.text)
-
-    print(sample_filenames)
+    print("\n\nSAMPLE FILENAMES:")
+    for filename in sample_filenames: print(filename)
+    print("\n\n")
 
     input("\nPress Any Key to Close\n\n")
     driver.close()
@@ -90,7 +65,7 @@ def get_page_links(driver: webdriver, page: str) -> list:
 
 
 def grab_item_links(driver: webdriver, page_links: list) -> list:
-    """Return the list of the item's links from a given page."""
+    """Return the list of the item's links from a given list of pages."""
     links = []
 
     # Loop through each pages.
@@ -109,9 +84,53 @@ def grab_item_links(driver: webdriver, page_links: list) -> list:
             links.append(href)
 
     if TEST_MODE:
-        links = links[:1]
+        links = links[:10]
 
     return links
+
+
+def grab_filenames(driver: webdriver, page_links: list) -> list:
+    """Return a list of filenames based on a given list of pages."""
+    filenames = []
+
+    if TEST_MODE:
+        limit = 10
+    else:
+        limit = 50
+
+    for page in page_links:
+        driver.get(page)
+
+        # Limit filenames.
+        if len(filenames) == limit:
+            break
+
+        # Navigate to the Files information.
+        file_tab_element = driver.find_element(
+            By.XPATH,
+            "//div[@class='torrent-tabs']//ul//li[2]//a"
+        )
+
+        file_tab_element.click()
+
+        file_information_element = driver.find_element(
+            By.XPATH,
+            "//div[@id='files']"
+        )
+
+        filename_elements = file_information_element.find_elements(
+            By.TAG_NAME,
+            'li'
+        )
+
+        # Pull Filename information.
+        for filename in filename_elements:
+            # Filter filename.
+            for extension in VE:
+                if '.' + extension in filename.text:
+                    filenames.append(filename.text)
+
+    return filenames
 
 
 if __name__ == "__main__":
