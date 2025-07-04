@@ -31,12 +31,12 @@ def grab_sample_filenames():
     for movie_link in movie_links:
         driver.get(movie_link)
 
+        # Navigate to the Files information.
         file_tab_element = driver.find_element(
             By.XPATH,
-            "//div[@class='tab-nav clearfix']//ul//li[2]"
+            "//div[@class='torrent-tabs']//ul//li[2]//a"
         )
 
-        # Extract File Name
         file_tab_element.click()
 
 
@@ -69,7 +69,8 @@ def grab_item_links(driver: webdriver, page_links: list) -> list:
 
     # Loop through each pages.
     for page in page_links:
-        driver.get(page)
+        if driver.current_url != page:
+            driver.get(page)
 
         # Grab Each Item
         item_elements = driver.find_elements(
