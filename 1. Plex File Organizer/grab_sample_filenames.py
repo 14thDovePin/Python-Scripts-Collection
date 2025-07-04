@@ -11,10 +11,17 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
+import re
+
 import website_ignore as website
 
 
 TEST_MODE = True
+# Video Extensions
+VE = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov',
+      'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v',
+      'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm4v', 'svi', '3gp', '3g2', 'mxf',
+      'roq', 'nsv', 'flv', 'f4v', 'f4p', 'f4a', 'f4b', 'mod']
 
 
 def grab_sample_filenames():
@@ -28,6 +35,7 @@ def grab_sample_filenames():
     movie_links = grab_item_links(driver, page_links)
 
     # Loop through each Movie Links & get the Sample File Names.
+    sample_filenames = []
     for movie_link in movie_links:
         driver.get(movie_link)
 
@@ -39,6 +47,24 @@ def grab_sample_filenames():
 
         file_tab_element.click()
 
+        file_information_element = driver.find_element(
+            By.XPATH,
+            "//div[@id='files']"
+        )
+
+        filename_elements = file_information_element.find_elements(
+            By.TAG_NAME,
+            'li'
+        )
+
+        # Pull Filename information.
+        for filename in filename_elements:
+            # Filter filename.
+            for extension in VE:
+                if '.' + extension in filename.text:
+                    sample_filenames.append(filename.text)
+
+    print(sample_filenames)
 
     input("\nPress Any Key to Close\n\n")
     driver.close()
