@@ -53,7 +53,7 @@ def grab_sample_filenames():
 
     driver.quit()
 
-    input("\n\n\033[1mSUCCESS | PRESS ANY KEY TO CLOSE...\n\n")
+    input("\n\nSUCCESS | PRESS ANY KEY TO CLOSE...\n\n")
 
 
 def get_page_links(driver: webdriver, page: str) -> list:
