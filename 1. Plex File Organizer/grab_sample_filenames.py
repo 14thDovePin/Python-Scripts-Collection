@@ -11,12 +11,15 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
+import json
 import re
 
 import website_ignore as website
 
 
-TEST_MODE = True
+TEST_MODE = False
+TM_LIMIT = 5
+FILENAME = "samples_ignore.json"
 # Video Extensions
 VE = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov',
       'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v',
@@ -39,12 +42,18 @@ def grab_sample_filenames():
     show_links = grab_item_links(driver, page_links)
     sample_filenames += grab_filenames(driver, show_links)
 
-    print("\n\nSAMPLE FILENAMES:")
-    for filename in sample_filenames: print(filename)
-    print("\n\n")
+    if TEST_MODE:
+        print(f"\n\nSAMPLE FILENAMES: [{len(sample_filenames)}]")
+        for filename in sample_filenames: print(f"\t{filename}")
+        print("\n\n")
 
-    input("\nPress Any Key to Close\n\n")
+    # Store sample file names into a file.
+    with open(FILENAME, 'w') as f:
+        f.writelines(json.dumps(sample_filenames, indent=4))
+
     driver.close()
+
+    input("\n\n\033[1mSUCCESS | PRESS ANY KEY TO CLOSE...\n\n")
 
 
 def get_page_links(driver: webdriver, page: str) -> list:
@@ -86,7 +95,7 @@ def grab_item_links(driver: webdriver, page_links: list) -> list:
             links.append(href)
 
     if TEST_MODE:
-        links = links[:10]
+        links = links[:TM_LIMIT]
 
     return links
 
@@ -96,7 +105,7 @@ def grab_filenames(driver: webdriver, page_links: list) -> list:
     filenames = []
 
     if TEST_MODE:
-        limit = 10
+        limit = TM_LIMIT
     else:
         limit = 50
 
