@@ -13,42 +13,49 @@ Below is the script's procedure. (may change as the script is developed)
 5. Rename all media files.
 """
 
+import json
 import os
 
 
 # Format Console
 os.system("title Plex File Organizer && color a")
+TEST_MODE = True
 
 
 def main():
     os.system("cls")
 
     # Prompt user for the movie/series directory & its type.
-    while True:
-        media_directory = input("Enter Media Directory: ")
+    if not TEST_MODE:
+        while True:
+            media_directory = input("Enter Media Directory: ")
 
-        if not os.path.exists(media_directory):
-            print("Invalid Directory!")
-        else:
-            break
+            if not os.path.exists(media_directory):
+                print("Invalid Directory!")
+            else:
+                break
 
-    print("\nMedia Type")
-    print("1 -> Movie")
-    print("2 -> Series\n")
+        print("\nMedia Type")
+        print("1 -> Movie")
+        print("2 -> Series\n")
 
-    while True:
-        media_type = input("Enter Type: ")
+        while True:
+            media_type = input("Enter Type: ")
 
-        if media_type == "1" or media_type == "2":
-            break
-        else:
-            print("Invalid Type!")
+            if media_type == "1" or media_type == "2":
+                break
+            else:
+                print("Invalid Type!")
 
     # Extract file names.
-    file_names = []
-    for _, _, files in os.walk(media_directory):
-        file_names = files
-        break
+    if not TEST_MODE:
+        file_names = []
+        for _, _, files in os.walk(media_directory):
+            file_names = files
+            break
+    else:
+        with open('samples_ignore.json', 'r') as f:
+            file_names = json.loads(f.readline())
 
     # Cleanup Filename/s
     # Divide Letters by Spaces & Periods
