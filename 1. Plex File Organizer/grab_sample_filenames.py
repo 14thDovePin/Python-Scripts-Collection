@@ -51,7 +51,7 @@ def grab_sample_filenames():
     with open(FILENAME, 'w') as f:
         f.writelines(json.dumps(sample_filenames, indent=4))
 
-    driver.close()
+    driver.quit()
 
     input("\n\n\033[1mSUCCESS | PRESS ANY KEY TO CLOSE...\n\n")
 
