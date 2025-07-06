@@ -26,6 +26,8 @@ VE = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov',
       'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v',
       'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm4v', 'svi', '3gp', '3g2', 'mxf',
       'roq', 'nsv', 'flv', 'f4v', 'f4p', 'f4a', 'f4b', 'mod']
+# Vide Qualities
+VQ  = ['240p', '360p', '480p', '720p', '1080p', '1440p', '2160p', '4320p']
 
 
 def main():
@@ -74,7 +76,7 @@ def main():
     # Cleanup Filename/s
     clean_filenames = [clean_filename(i) for i in filenames]
 
-    for i in clean_filenames: print(i)
+    for i in clean_filenames: print(' '.join(i))
     input("Press Any Key To Exit")
 
     # Extract title metadata from OMDb
@@ -128,7 +130,7 @@ def clean_filename(filename: str) -> str:
 
     # For Series ---
     # Cut list from start to season/episode number.
-    pattern_se = r'SEASON[ .]?\d+|EPISODE[ .]?\d+|S\d+|EP?\d+'
+    pattern_se = r'SEASON[\s.]?\d+|EPISODE[\s.]?\d+|S\d+|EP?\d+'
     for word in results_rough[:]:
         results_se = re.findall(pattern_se, word, re.IGNORECASE)
         if results_se:
@@ -137,8 +139,16 @@ def clean_filename(filename: str) -> str:
             results_rough += results_se
             break
 
+    # Special Exceptions ---
+    # Cut from video quality to the end
+    for word in results_rough[:]:
+        if word in VQ:
+            vq_index = results_rough.index(word)
+            results_rough = results_rough[:vq_index]
+            break
+
     # Add file extension.
-    results_rough.append(file_extension)
+    results_rough[-1] = results_rough[-1] + file_extension
 
     # Return cleaned filename
     return results_rough
