@@ -15,6 +15,7 @@ Below is the script's procedure. (may change as the script is developed)
 
 import json
 import os
+import re
 
 
 # Format Console
@@ -49,17 +50,27 @@ def main():
 
     # Extract file names.
     if not TEST_MODE:
-        file_names = []
+        filenames = []
         for _, _, files in os.walk(media_directory):
-            file_names = files
+            filenames = files
             break
     else:
-        with open('samples_ignore.json', 'r') as f:
-            file_names = json.loads(f.readline())
+        # Find Samples
+        directory = __file__.split('\\')[:-1]
+        directory = '\\'.join(directory)
+        directory += '\\samples_ignore.json'
+
+        # Process Samples
+        with open(directory, 'r') as f:
+            raw_string = ""
+            for i in f.readlines(): raw_string += i
+            filenames = json.loads(raw_string)
 
     # Cleanup Filename/s
-    # Divide Letters by Spaces & Periods
+    clean_filenames = [clean_filename(i) for i in filenames]
 
+    for i in clean_filenames: print(i)
+    input("Press Any Key To Exit")
 
     # Extract title metadata from OMDb
     if media_type == "1":
@@ -68,6 +79,36 @@ def main():
     # Extract series title from IMDb
     elif media_type == "2":
         pass
+
+
+def clean_filename(filename: str) -> str:
+    """Return a clean filename."""
+    # Check File Extension
+
+    # Pull all word sequences.
+    pattern_raw = r'[^. \s]+'
+    results_raw = re.findall(pattern_raw, filename)
+
+    # For Movies ---
+    # Cut list from start to the last date detected.
+    pattern_date = r'19\d\d|20\d\d'
+    results_raw.reverse()
+    date = None
+
+    for item in results_raw:
+        if re.search(pattern_date, item):
+            date = item
+            break
+
+    results_raw.reverse()
+
+    if date:
+        date_index = results_raw.index(date)
+        results_rough = results_raw[:date_index+1]
+    else:
+        results_rough = results_raw
+
+    return results_rough
 
 
 if __name__ == "__main__":
