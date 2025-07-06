@@ -21,6 +21,11 @@ import re
 # Format Console
 os.system("title Plex File Organizer && color a")
 TEST_MODE = True
+# Video Extensions
+VE = ['webm', 'mkv', 'flv', 'vob', 'ogv', 'ogg', 'rrc', 'gifv', 'mng', 'mov',
+      'avi', 'qt', 'wmv', 'yuv', 'rm', 'asf', 'amv', 'mp4', 'm4p', 'm4v',
+      'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm4v', 'svi', '3gp', '3g2', 'mxf',
+      'roq', 'nsv', 'flv', 'f4v', 'f4p', 'f4a', 'f4b', 'mod']
 
 
 def main():
@@ -80,34 +85,62 @@ def main():
     elif media_type == "2":
         pass
 
+    # Prompt user it title, year, and type is correct.
+
 
 def clean_filename(filename: str) -> str:
     """Return a clean filename."""
-    # Check File Extension
-
     # Pull all word sequences.
     pattern_raw = r'[^. \s]+'
-    results_raw = re.findall(pattern_raw, filename)
+    results = re.findall(pattern_raw, filename)
+
+    # Preserve File Extension
+    for word in results:
+        if word in VE:
+            file_extension = '.' + word
+
+    # Cut list from start to before file extension.
+    for extension in VE:
+        for word in results[:]:
+            if extension == word:
+                extension_index = results.index(word)
+                results = results[:extension_index]
+                break
 
     # For Movies ---
     # Cut list from start to the last date detected.
     pattern_date = r'19\d\d|20\d\d'
-    results_raw.reverse()
+    results.reverse()
     date = None
 
-    for item in results_raw:
+    for item in results:
         if re.search(pattern_date, item):
             date = item
             break
 
-    results_raw.reverse()
+    results.reverse()
 
     if date:
-        date_index = results_raw.index(date)
-        results_rough = results_raw[:date_index+1]
+        date_index = results.index(date)
+        results_rough = results[:date_index+1]
     else:
-        results_rough = results_raw
+        results_rough = results
 
+    # For Series ---
+    # Cut list from start to season/episode number.
+    pattern_se = r'SEASON[ .]?\d+|EPISODE[ .]?\d+|S\d+|EP?\d+'
+    for word in results_rough[:]:
+        results_se = re.findall(pattern_se, word, re.IGNORECASE)
+        if results_se:
+            se_index = results_rough.index(word)
+            results_rough = results_rough[:se_index]
+            results_rough += results_se
+            break
+
+    # Add file extension.
+    results_rough.append(file_extension)
+
+    # Return cleaned filename
     return results_rough
 
 
