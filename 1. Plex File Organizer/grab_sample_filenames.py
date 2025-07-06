@@ -117,33 +117,43 @@ def grab_filenames(driver: webdriver, page_links: list) -> list:
             break
 
         # Navigate to the Files information.
-        file_tab_element = driver.find_element(
-            By.XPATH,
-            "//div[@class='torrent-tabs']//ul//li[2]//a"
-        )
+        try:
+            file_tab_element = driver.find_element(
+                By.XPATH,
+                "//div[@class='torrent-tabs']//ul//li[2]//a"
+            )
+        except:
+            print("Failed to Grab Filename..")
+            continue
 
         file_tab_element.click()
 
-        file_information_element = driver.find_element(
-            By.XPATH,
-            "//div[@id='files']"
-        )
+        try:
+            file_information_element = driver.find_element(
+                By.XPATH,
+                "//div[@id='files']"
+            )
 
-        filename_elements = file_information_element.find_elements(
-            By.TAG_NAME,
-            'li'
-        )
+            filename_elements = file_information_element.find_elements(
+                By.TAG_NAME,
+                'li'
+            )
+        except:
+            print("Failed to Grab Filename..")
+            continue
 
         # Pull Filename information.
+        limit_pull = 0
         for filename in filename_elements:
 
             # Limit filenames.
-            if len(filenames) == limit:
+            if len(filenames) == limit or limit_pull == 2:
                 break
 
             # Filter filename.
             for extension in VE:
                 if '.' + extension in filename.text:
+                    limit_pull += 1
                     filenames.append(filename.text)
 
     return filenames
