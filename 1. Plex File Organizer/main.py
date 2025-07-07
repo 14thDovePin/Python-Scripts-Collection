@@ -16,7 +16,7 @@ Below is the script's procedure. (may change as the script is developed)
 import json
 import os
 
-from process_filename import process_filename
+from process_filename import process_filename, print_pf
 
 
 TEST_MODE = True
@@ -71,7 +71,8 @@ def main():
     clean_filenames = [process_filename(i) for i in filenames]
 
     for i in clean_filenames:
-        print(' '.join(i[:-1]) + i[-1])
+        # print(' '.join(i[:-1]) + i[-1])
+        print_pf(i)
     input("Press Any Key To Exit")
 
     # Extract metadata from OMDb with current title.

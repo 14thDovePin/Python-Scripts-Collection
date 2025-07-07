@@ -78,7 +78,7 @@ def process_filename(filename: str) -> dict:
             pf['file_extension'] = extension
 
     # Determine File Type
-    if not pf['season'] and not pf['episode']:
+    if pf['season'] and pf['episode']:
         pf['type'] = 'TV Show'
     else:
         pf['type'] = 'Movie'
@@ -145,4 +145,5 @@ def process_filename(filename: str) -> dict:
     results.append(file_extension)
 
     # Return cleaned filename
-    return results
+    # return results
+    return pf
