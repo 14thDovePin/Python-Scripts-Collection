@@ -76,6 +76,10 @@ def main():
     # Cleanup Filename/s
     clean_filenames = [clean_filename(i) for i in filenames]
 
+    # Extract metadata from OMDb with current title.
+    # If it fails, prompt user to manually input title & year
+    # to match & extract metadata from.
+
     for i in clean_filenames: print(' '.join(i))
     input("Press Any Key To Exit")
 
@@ -93,8 +97,8 @@ def main():
 def clean_filename(filename: str) -> str:
     """Return a clean filename."""
     # Pull all word sequences.
-    pattern_raw = r'[^. \s]+'
-    results = re.findall(pattern_raw, filename)
+    word_pattern = r'[^. \s]+'
+    results = re.findall(word_pattern, filename)
 
     # Preserve File Extension
     for word in results:
@@ -111,12 +115,12 @@ def clean_filename(filename: str) -> str:
 
     # For Movies ---
     # Cut list from start to the last date detected.
-    pattern_date = r'19\d\d|20\d\d'
+    date_pattern = r'19\d\d|20\d\d'
     results.reverse()
     date = None
 
     for item in results:
-        if re.search(pattern_date, item):
+        if re.search(date_pattern, item):
             date = item
             break
 
@@ -124,34 +128,35 @@ def clean_filename(filename: str) -> str:
 
     if date:
         date_index = results.index(date)
-        results_rough = results[:date_index+1]
+        results = results[:date_index+1]
     else:
-        results_rough = results
+        results = results
 
     # For Series ---
     # Cut list from start to season/episode number.
     pattern_se = r'SEASON[\s.]?\d+|EPISODE[\s.]?\d+|S\d+|EP?\d+'
-    for word in results_rough[:]:
+    for word in results[:]:
         results_se = re.findall(pattern_se, word, re.IGNORECASE)
         if results_se:
-            se_index = results_rough.index(word)
-            results_rough = results_rough[:se_index]
-            results_rough += results_se
+            se_index = results.index(word)
+            results = results[:se_index]
+            results += results_se
             break
 
     # Special Exceptions ---
     # Cut from video quality to the end
-    for word in results_rough[:]:
+    for word in results[:]:
         if word in VQ:
-            vq_index = results_rough.index(word)
-            results_rough = results_rough[:vq_index]
+            vq_index = results.index(word)
+            results = results[:vq_index]
             break
 
     # Add file extension.
-    results_rough[-1] = results_rough[-1] + file_extension
+    # results[-1] = results[-1] + file_extension
+    results.append(file_extension)
 
     # Return cleaned filename
-    return results_rough
+    return results
 
 
 if __name__ == "__main__":
