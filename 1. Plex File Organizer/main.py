@@ -15,15 +15,11 @@ Below is the script's procedure. (may change as the script is developed)
 
 import json
 import os
-import re
 
-from data_sets import video_extensions, video_qualities
-from process_filename import clean_filename
+from process_filename import process_filename
 
 
 TEST_MODE = True
-VE = video_extensions()  # Video Extensions
-VQ  = video_qualities()  # Vide Qualities
 
 
 def main():
@@ -72,7 +68,7 @@ def main():
             filenames = json.loads(raw_string)
 
     # Cleanup Filename/s
-    clean_filenames = [clean_filename(i) for i in filenames]
+    clean_filenames = [process_filename(i) for i in filenames]
 
     for i in clean_filenames:
         print(' '.join(i[:-1]) + i[-1])

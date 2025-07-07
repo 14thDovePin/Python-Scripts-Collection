@@ -7,8 +7,69 @@ VE = video_extensions()
 VQ = video_qualities()
 
 
-def clean_filename(filename: str) -> str:
-    """Return a clean filename."""
+def process_filename(filename: str) -> dict:
+    """Return a processed dictionary of the filename.
+
+    Dictionary Keys
+        title (str)
+        type (str) - Either "Movie" or "TV Show"
+        year (int)
+        season (int)
+        episode (int)
+        file_extension (int)
+    """
+    # Processed Filename
+    pf = {
+        "title" : '',
+        "type" : '',
+        "year" : None,
+        "season" : None,
+        "episode" : None,
+        "file_extension" : ''
+    }
+
+    ignore_case = re.IGNORECASE
+
+    # Extract Year
+    year_pattern = r'19\d\d|20\d\d'
+    year = re.search(year_pattern, filename)
+
+    if year:
+        year = year.group(0)
+        pf['year'] = int(year)
+
+    number_pattern = r'\d+'
+
+    # Extract Season Number
+    season_pattern = r'SEASON[\s.]?\d+|S\d+'
+    season = re.search(season_pattern, filename, ignore_case)
+    if season:
+        season = season.group(0)
+        number = re.search(number_pattern, season)
+        pf['season'] = int(number.group(0))
+
+    # Extract Episode Number
+    episode_pattern = r'EPISODE[\s.]?\d+|EP?\d+'
+    episode = re.search(episode_pattern, filename, ignore_case)
+
+    if episode:
+        episode = episode.group(0)
+        number = re.search(number_pattern, episode)
+        pf['episode'] = int(number.group(0))
+
+    # Extract File Extension
+    for extension in VE:
+        if extension in filename:
+            pf['file_extension'] = extension
+
+    # Determine File Type
+    if not pf['season'] and not pf['episode']:
+        pf['type'] = 'TV Show'
+    else:
+        pf['type'] = 'Movie'
+
+
+
     # Pull all word sequences.
     word_pattern = r'[^. \s]+'
     results = re.findall(word_pattern, filename)
