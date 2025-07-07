@@ -7,6 +7,19 @@ VE = video_extensions()
 VQ = video_qualities()
 
 
+def print_pf(processed_filename: dict) -> None:
+    # Verbosely print on terminal the processed filename.
+    pf = processed_filename
+
+    print(f'\nTitle -----> {pf['title']}')
+    print(f'Type ------> {pf['type']}')
+    print(f'Year ------> {pf['year']}')
+    print(f'Season # --> {pf['season']}')
+    print(f'Episode # -> {pf['episode']}')
+    print(f'File Type -> {pf['file_extension']}')
+    print(f'IMDb ID ---> {pf['imdb_id']}')
+
+
 def process_filename(filename: str) -> dict:
     """Return a processed dictionary of the filename.
 
@@ -17,6 +30,7 @@ def process_filename(filename: str) -> dict:
         season (int)
         episode (int)
         file_extension (int)
+        imdb_id (str)
     """
     # Processed Filename
     pf = {
@@ -25,7 +39,8 @@ def process_filename(filename: str) -> dict:
         "year" : None,
         "season" : None,
         "episode" : None,
-        "file_extension" : ''
+        "file_extension" : '',
+        "imdb_id" : ''
     }
 
     ignore_case = re.IGNORECASE
