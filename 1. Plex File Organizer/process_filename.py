@@ -11,14 +11,14 @@ def print_pf(processed_filename: dict) -> None:
     # Verbosely print on terminal the processed filename.
     pf = processed_filename
 
-    print(f'\nTitle ------> {pf['title']}')
-    print(f'Rough Type--> {pf['type']}')
-    print(f'Type -------> {pf['type']}')
-    print(f'Year -------> {pf['year']}')
-    print(f'Season # ---> {pf['season']}')
-    print(f'Episode # --> {pf['episode']}')
-    print(f'File Type --> {pf['file_extension']}')
-    print(f'IMDb ID ----> {pf['imdb_id']}')
+    print(f'\nTitle ----------> {pf['title']}')
+    print(f'Title Sequence--> {pf['rough_title']}')
+    print(f'Type -----------> {pf['type']}')
+    print(f'Year -----------> {pf['year']}')
+    print(f'Season # -------> {pf['season']}')
+    print(f'Episode # ------> {pf['episode']}')
+    print(f'File Type ------> {pf['file_extension']}')
+    print(f'IMDb ID --------> {pf['imdb_id']}')
 
 
 def process_filename(filename: str) -> dict:
@@ -37,11 +37,11 @@ def process_filename(filename: str) -> dict:
     # Processed Filename
     pf = {
         "title" : '',
-        "rough_title": '',
-        "type" : None,
-        "year" : None,
-        "season" : None,
-        "episode" : None,
+        "title_sequence": [],
+        "type" : '',
+        "year" : 0,
+        "season" : 0,
+        "episode" : 0,
         "file_extension" : '',
         "imdb_id" : ''
     }
@@ -142,5 +142,5 @@ def process_filename(filename: str) -> dict:
     word_sequence = word_sequence[:final_index]
 
     # Save the rough title & return the processed filename
-    pf['rough_title'] = ' '.join(word_sequence)
+    pf['rough_title'] = word_sequence
     return pf
