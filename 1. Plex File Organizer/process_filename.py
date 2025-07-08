@@ -87,15 +87,15 @@ def process_filename(filename: str) -> dict:
 
     # Remove anything enclosed in () or [], But if it
     # contains the Year, then replace it with it.
-    pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'  # Parentheses
+    pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     parenthesized_words = re.findall(pattern, filename)
 
     for matched_word in parenthesized_words:
         year = re.search(year_pattern, matched_word)
 
         if year:
-            s_char = matched_word[0]
-            starting_char = s_char if s_char != '(' else s_char
+            s_char = matched_word[0]  # Starting Character
+            starting_char = s_char if s_char != '(' else ''
             year_final = starting_char + year.group(0)
             filename = filename.replace(matched_word, year_final)
         else:
