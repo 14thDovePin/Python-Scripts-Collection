@@ -70,6 +70,8 @@ def main():
     # Cleanup Filename/s
     clean_filenames = [process_filename(i) for i in filenames]
 
+    input()
+
     for i in clean_filenames:
         # print(' '.join(i[:-1]) + i[-1])
         print_pf(i)

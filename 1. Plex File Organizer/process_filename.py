@@ -35,7 +35,7 @@ def process_filename(filename: str) -> dict:
     # Processed Filename
     pf = {
         "title" : '',
-        "type" : '',
+        "type" : None,
         "year" : None,
         "season" : None,
         "episode" : None,
@@ -80,70 +80,66 @@ def process_filename(filename: str) -> dict:
     # Determine File Type
     if pf['season'] and pf['episode']:
         pf['type'] = 'TV Show'
-    else:
+    elif pf['year']:
         pf['type'] = 'Movie'
 
+    # Special Case/s
 
+    # Remove anything enclosed in () or [], But if it
+    # contains the Year, then replace it with it.
+    pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'  # Parentheses
+    parenthesized_words = re.findall(pattern, filename)
 
-    # Pull all word sequences.
+    for matched_word in parenthesized_words:
+        year = re.search(year_pattern, matched_word)
+
+        if year:
+            s_char = matched_word[0]
+            starting_char = s_char if s_char != '(' else s_char
+            year_final = starting_char + year.group(0)
+            filename = filename.replace(matched_word, year_final)
+        else:
+            filename = filename.replace(matched_word, '')
+
+    # Process Title
+
+    # Pull Word Sequence
     word_pattern = r'[^. \s]+'
-    results = re.findall(word_pattern, filename)
+    word_sequence = re.findall(word_pattern, filename)
 
-    # Preserve file extension.
-    for word in results:
+    # Cut List
+    indexes = []
+    for word in word_sequence:
+        store_index = False
+
+        # File Extension
         if word in VE:
-            file_extension = '.' + word
+            store_index = True
 
-    # Cut list from start to before file extension.
-    for extension in VE:
-        for word in results[:]:
-            if extension == word:
-                extension_index = results.index(word)
-                results = results[:extension_index]
-                break
+        # Year
+        if re.search(year_pattern, word):
+            store_index = True
 
-    # For Movies ---
-    # Cut list from start to the last date detected.
-    date_pattern = r'19\d\d|20\d\d'
-    results.reverse()
-    date = None
-
-    for item in results:
-        if re.search(date_pattern, item):
-            date = item
-            break
-
-    results.reverse()
-
-    if date:
-        date_index = results.index(date)
-        results = results[:date_index+1]
-    else:
-        results = results
-
-    # For Series ---
-    # Cut list from start to season/episode number.
-    pattern_se = r'SEASON[\s.]?\d+|EPISODE[\s.]?\d+|S\d+|EP?\d+'
-    for word in results[:]:
-        results_se = re.findall(pattern_se, word, re.IGNORECASE)
-        if results_se:
-            se_index = results.index(word)
-            results = results[:se_index]
-            results += results_se
-            break
-
-    # Special Exceptions ---
-    # Cut from video quality to the end
-    for word in results[:]:
+        # Video Quality
         if word in VQ:
-            vq_index = results.index(word)
-            results = results[:vq_index]
-            break
+            store_index = True
 
-    # Add file extension.
-    # results[-1] = results[-1] + file_extension
-    results.append(file_extension)
+        # Season/Episode #
+        s_check = re.search(season_pattern, word)
+        e_check = re.search(episode_pattern, word)
 
-    # Return cleaned filename
-    # return results
+        if s_check and e_check:
+            store_index = True
+
+        # Store Index
+        if store_index:
+            indexes.append(word_sequence.index(word))
+
+    final_index = min(indexes)
+    word_sequence = word_sequence[:final_index]
+
+    sample = ' '.join(word_sequence)
+    print(sample)
+
+    # Return Processed Filename
     return pf
