@@ -26,7 +26,7 @@ def process_filename(filename: str) -> dict:
 
     Dictionary Keys
         title (str)
-        rough_title (str)
+        title_sequence (list)
         type (str) - Either "Movie" or "TV Show"
         year (int)
         season (int)
