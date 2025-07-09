@@ -1,8 +1,12 @@
 import requests
+import os
+
+from dotenv import load_dotenv
 
 
+load_dotenv()
 # URL Definitions
-API_KEY = ''
+API_KEY = os.getenv('omdb_api')
 OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
 PARAMETERS = {
     'title' : 't=',
