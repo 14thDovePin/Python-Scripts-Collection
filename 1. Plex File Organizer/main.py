@@ -16,6 +16,8 @@ Below is the script's procedure. (may change as the script is developed)
 import json
 import os
 
+from colorama import just_fix_windows_console
+
 from process_filename import process_filename, print_pf
 from request_omdb import request_metadata
 
@@ -68,9 +70,9 @@ def main():
             filenames = json.loads(raw_string)
 
     # Cleanup Filename/s
-    clean_filenames = [process_filename(i) for i in filenames]
+    processed_filenames = [process_filename(i) for i in filenames]
 
-    for i in clean_filenames:
+    for i in processed_filenames:
         # print_pf(i)
         request_metadata(i)
     input("Press Any Key To Exit")
@@ -80,12 +82,11 @@ def main():
     # to match & extract metadata from.
 
 
-
 if __name__ == "__main__":
     # Format Console
+    just_fix_windows_console()
     commands = [
         "title Plex File Organizer",
-        "color a",
         "cls"
     ]
 

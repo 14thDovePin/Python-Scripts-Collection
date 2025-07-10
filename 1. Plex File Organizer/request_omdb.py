@@ -4,6 +4,8 @@ import os
 
 from dotenv import load_dotenv
 
+from colorama import Fore, Back, Style
+
 
 load_dotenv()
 # URL Definitions
@@ -69,9 +71,13 @@ def request_metadata(processed_filename: dict):
     metadata = requests.get(url).json()
 
     if metadata['Response'] == 'False':
-        print("Processing Failed! Match not found...")
+        print('Processing ', end='')
+        print(Fore.RED + 'Failed! ' + Style.RESET_ALL, end='')
+        print("Match not found...")
     else:
-        print("Processing Success! Match found...")
+        print('Processing ', end='')
+        print(Fore.GREEN + 'Success! ' + Style.RESET_ALL, end='')
+        print("Match found...")
 
     # Return Metadata
     return metadata
