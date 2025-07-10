@@ -9,13 +9,6 @@ load_dotenv()
 # URL Definitions
 API_KEY = os.getenv('omdb_api')
 OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
-PARAMETERS = {
-    'title' : 't=',
-    'year' : 'y=',
-    'type' : 'type=',  # [movie, series, episode]
-    'imdb_id' : 'i=',
-    'return_type' : 'r='  # [json, xml]
-}
 
 
 def construct_request(
@@ -35,6 +28,13 @@ def construct_request(
         return_type: 'json' or 'xml'
     """
     # Integrate Parameters
+    PARAMETERS = {
+        'title' : 't=',
+        'year' : 'y=',
+        'type' : 'type=',  # [movie, series, episode]
+        'imdb_id' : 'i=',
+        'return_type' : 'r='  # [json, xml]
+    }
 
     combined_title = title[0]
     for word in title[1:]:
@@ -54,10 +54,13 @@ def construct_request(
     return request
 
 
-def request_data(processed_filename: dict):
+def request_metadata(processed_filename: dict):
     """Return the json metadata of a given processed filename."""
     title_sequence = processed_filename['title_sequence']
     year = processed_filename['year']
+
+    if not title_sequence:
+        return
 
     print(f"Processing Title: {' '.join(title_sequence)}")
 

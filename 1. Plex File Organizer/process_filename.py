@@ -39,9 +39,9 @@ def process_filename(filename: str) -> dict:
         "title" : '',
         "title_sequence": [],
         "type" : '',
-        "year" : 0,
-        "season" : 0,
-        "episode" : 0,
+        "year" : '',
+        "season" : '',
+        "episode" : '',
         "file_extension" : '',
         "imdb_id" : ''
     }
@@ -54,7 +54,7 @@ def process_filename(filename: str) -> dict:
 
     if year:
         year = year.group(0)
-        pf['year'] = int(year)
+        pf['year'] = year
 
     number_pattern = r'\d+'
 
@@ -64,7 +64,7 @@ def process_filename(filename: str) -> dict:
     if season:
         season = season.group(0)
         number = re.search(number_pattern, season)
-        pf['season'] = int(number.group(0))
+        pf['season'] = number.group(0)
 
     # Extract Episode Number
     episode_pattern = r'EPISODE[\s.]?\d+|EP?\d+'
@@ -73,7 +73,7 @@ def process_filename(filename: str) -> dict:
     if episode:
         episode = episode.group(0)
         number = re.search(number_pattern, episode)
-        pf['episode'] = int(number.group(0))
+        pf['episode'] = number.group(0)
 
     # Extract File Extension
     for extension in VE:
@@ -142,5 +142,5 @@ def process_filename(filename: str) -> dict:
     word_sequence = word_sequence[:final_index]
 
     # Save the rough title & return the processed filename
-    pf['rough_title'] = word_sequence
+    pf['title_sequence'] = word_sequence
     return pf
