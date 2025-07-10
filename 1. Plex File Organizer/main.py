@@ -16,8 +16,9 @@ Below is the script's procedure. (may change as the script is developed)
 import json
 import os
 
-from colorama import just_fix_windows_console
+from colorama import Fore, Back, Style
 
+from colors import init_colors, multiprint
 from process_filename import process_filename, print_pf
 from request_omdb import request_metadata
 
@@ -84,7 +85,8 @@ def main():
 
 if __name__ == "__main__":
     # Format Console
-    just_fix_windows_console()
+    init_colors()
+    print(Fore.LIGHTGREEN_EX, end='')
     commands = [
         "title Plex File Organizer",
         "cls"

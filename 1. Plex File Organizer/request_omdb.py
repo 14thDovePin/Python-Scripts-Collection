@@ -2,9 +2,10 @@ import math
 import requests
 import os
 
+from colorama import Fore, Back, Style
 from dotenv import load_dotenv
 
-from colorama import Fore, Back, Style
+from colors import multiprint
 
 
 load_dotenv()
@@ -64,20 +65,32 @@ def request_metadata(processed_filename: dict):
     if not title_sequence:
         return
 
-    print(f"Processing Title: {' '.join(title_sequence)}")
-
     # Attempt to match metadata with processed filename.
     url = construct_request(title_sequence, year)
     metadata = requests.get(url).json()
 
+    title = ' '.join(title_sequence)
+
     if metadata['Response'] == 'False':
-        print('Processing ', end='')
-        print(Fore.LIGHTRED_EX + 'Failed! ' + Fore.LIGHTGREEN_EX, end='')
-        print("Match not found...")
+        multiprint(
+            [
+                Fore.LIGHTRED_EX,
+                'Failed! -- ',
+                Fore.LIGHTGREEN_EX,
+                'Processed ',
+                f'[{title}] '
+            ]
+        )
     else:
-        print('Processing ', end='')
-        print(Fore.LIGHTCYAN_EX + 'Success! ' + Fore.LIGHTGREEN_EX, end='')
-        print("Match found...")
+        multiprint(
+            [
+                Fore.LIGHTCYAN_EX,
+                'Success! - ',
+                Fore.LIGHTGREEN_EX,
+                'Processed ',
+                f'[{title}] '
+            ]
+        )
 
     # Return Metadata
     return metadata
