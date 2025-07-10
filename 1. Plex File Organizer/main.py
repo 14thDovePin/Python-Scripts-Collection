@@ -23,7 +23,6 @@ TEST_MODE = True
 
 
 def main():
-
     # Prompt User
     if not TEST_MODE:
         # Prompt Files Directory
@@ -78,15 +77,6 @@ def main():
     # If it fails, prompt user to manually input title & year
     # to match & extract metadata from.
 
-    # Extract title metadata from OMDb
-    if media_type == "1":
-        pass
-
-    # Extract series title from IMDb
-    elif media_type == "2":
-        pass
-
-    # Prompt user it title, year, and type is correct.
 
 
 if __name__ == "__main__":
