@@ -65,21 +65,6 @@ def request_data(processed_filename: dict):
     url = construct_request(title_sequence, year)
     metadata = requests.get(url).json()
 
-    # # Failsafe, attempt to match for each consecutive sequenced words.
-    # if metadata['Response'] == 'False':
-    #     temp_ts = []
-
-    #     for word in title_sequence:
-    #         temp_ts.append(word)
-    #         url = construct_request(temp_ts, year)
-    #         metadata = requests.get(url).json()
-
-    #         if metadata['Response'] == 'True':
-    #             # Title Check
-    #             title = metadata['Title']
-    #             if check_title(title, title_sequence):
-    #                 break
-
     if metadata['Response'] == 'False':
         print("Processing Failed! Match not found...")
     else:
@@ -87,36 +72,3 @@ def request_data(processed_filename: dict):
 
     # Return Metadata
     return metadata
-
-
-def check_title(title: str, title_sequence: list) -> bool:
-    """Check if title contains at least 2/3 of the title_squence."""
-    # Calculate word count based on criteria.
-    count = math.ceil(len(title_sequence)*2/3)
-    check = 0
-
-    # Loop through each word.
-    for word in title_sequence[:count]:
-        if word in title:
-            check += 1
-
-    # Check if word count satisfies criteria.
-    if check >= count:
-        return True
-
-    return False
-
-
-# Sample
-pf = {
-    "title" : '',
-    "title_sequence": ['Aile', 'Saadeti', 'ABC'],
-    "type" : '',
-    "year" : '',
-    "season" : 0,
-    "episode" : 0,
-    "file_extension" : '',
-    "imdb_id" : ''
-}
-
-tr = request_data(pf)
