@@ -72,11 +72,11 @@ def request_metadata(processed_filename: dict):
 
     if metadata['Response'] == 'False':
         print('Processing ', end='')
-        print(Fore.RED + 'Failed! ' + Style.RESET_ALL, end='')
+        print(Fore.LIGHTRED_EX + 'Failed! ' + Fore.LIGHTGREEN_EX, end='')
         print("Match not found...")
     else:
         print('Processing ', end='')
-        print(Fore.GREEN + 'Success! ' + Style.RESET_ALL, end='')
+        print(Fore.LIGHTCYAN_EX + 'Success! ' + Fore.LIGHTGREEN_EX, end='')
         print("Match found...")
 
     # Return Metadata
