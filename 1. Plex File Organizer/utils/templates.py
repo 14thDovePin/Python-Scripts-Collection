@@ -1,5 +1,5 @@
 def generate_metadata() -> dict:
-    """Return a template dict of a title's metadata.
+    """Return a template dict of a title"s metadata.
 
     Returns
     -------
@@ -17,14 +17,22 @@ def generate_metadata() -> dict:
         - **imdb_id** : str
     """
     metadata = {
-        "title" : '',
+        "title" : "",
         "title_sequence": [],
-        "type" : '',
-        "year" : '',
-        "season" : '',
-        "episode" : '',
-        "file_extension" : '',
-        "imdb_id" : ''
+        "type" : "",
+        "year" : "",
+        "season" : "",
+        "episode" : "",
+        "file_extension" : "",
+        "imdb_id" : ""
+    }
+
+    file_information = {
+        "filename" : "",
+        "new_filename" : "",
+        "extension" : "",
+        "path" : "",
+        "new_path" : "",
     }
 
     return metadata

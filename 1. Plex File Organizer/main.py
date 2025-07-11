@@ -64,10 +64,6 @@ def main():
         request_metadata(i)
     input("Press Any Key To Exit")
 
-    # Extract metadata from OMDb with current title.
-    # If it fails, prompt user to manually input title & year
-    # to match & extract metadata from.
-
 
 if __name__ == "__main__":
     # Format Console
