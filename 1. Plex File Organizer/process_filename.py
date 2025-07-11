@@ -7,45 +7,22 @@ VE = video_extensions()
 VQ = video_qualities()
 
 
-def print_pf(processed_filename: dict) -> None:
+def print_metadata(processed_filename: dict) -> None:
     # Verbosely print on terminal the processed filename.
-    pf = processed_filename
+    metadata = processed_filename
 
-    print(f'\nTitle ----------> {pf['title']}')
-    print(f'Title Sequence--> {pf['rough_title']}')
-    print(f'Type -----------> {pf['type']}')
-    print(f'Year -----------> {pf['year']}')
-    print(f'Season # -------> {pf['season']}')
-    print(f'Episode # ------> {pf['episode']}')
-    print(f'File Type ------> {pf['file_extension']}')
-    print(f'IMDb ID --------> {pf['imdb_id']}')
+    print(f'\nTitle ----------> {metadata['title']}')
+    print(f'Title Sequence--> {metadata['title_sequence']}')
+    print(f'Type -----------> {metadata['type']}')
+    print(f'Year -----------> {metadata['year']}')
+    print(f'Season # -------> {metadata['season']}')
+    print(f'Episode # ------> {metadata['episode']}')
+    print(f'File Type ------> {metadata['file_extension']}')
+    print(f'IMDb ID --------> {metadata['imdb_id']}')
 
 
-def process_filename(filename: str) -> dict:
-    """Return a processed dictionary of the filename.
-
-    Dictionary Keys
-        title (str)
-        title_sequence (list)
-        type (str) - Either "Movie" or "TV Show"
-        year (int)
-        season (int)
-        episode (int)
-        file_extension (int)
-        imdb_id (str)
-    """
-    # Processed Filename
-    pf = {
-        "title" : '',
-        "title_sequence": [],
-        "type" : '',
-        "year" : '',
-        "season" : '',
-        "episode" : '',
-        "file_extension" : '',
-        "imdb_id" : ''
-    }
-
+def process_filename(filename: str, metadata: dict) -> dict:
+    """Generate metadata based from given filename."""
     ignore_case = re.IGNORECASE
 
     # Extract Year
@@ -54,7 +31,7 @@ def process_filename(filename: str) -> dict:
 
     if year:
         year = year.group(0)
-        pf['year'] = year
+        metadata['year'] = year
 
     number_pattern = r'\d+'
 
@@ -64,7 +41,7 @@ def process_filename(filename: str) -> dict:
     if season:
         season = season.group(0)
         number = re.search(number_pattern, season)
-        pf['season'] = number.group(0)
+        metadata['season'] = number.group(0)
 
     # Extract Episode Number
     episode_pattern = r'EPISODE[\s.]?\d+|EP?\d+'
@@ -73,18 +50,18 @@ def process_filename(filename: str) -> dict:
     if episode:
         episode = episode.group(0)
         number = re.search(number_pattern, episode)
-        pf['episode'] = number.group(0)
+        metadata['episode'] = number.group(0)
 
     # Extract File Extension
     for extension in VE:
         if extension in filename:
-            pf['file_extension'] = extension
+            metadata['file_extension'] = extension
 
     # Determine File Type
-    if pf['season'] and pf['episode']:
-        pf['type'] = 'TV Show'
-    elif pf['year']:
-        pf['type'] = 'Movie'
+    if metadata['season'] and metadata['episode']:
+        metadata['type'] = 'series'
+    elif metadata['year']:
+        metadata['type'] = 'movie'
 
     # Special Case/s
 
@@ -142,5 +119,5 @@ def process_filename(filename: str) -> dict:
     word_sequence = word_sequence[:final_index]
 
     # Save the rough title & return the processed filename
-    pf['title_sequence'] = word_sequence
-    return pf
+    metadata['title_sequence'] = word_sequence
+    return metadata

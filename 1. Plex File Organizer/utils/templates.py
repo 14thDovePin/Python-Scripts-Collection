@@ -9,7 +9,7 @@ def generate_metadata() -> dict:
         - **title_sequence** : list
           An ordered list of string composed from the title.
         - **type** : str
-          Can be either "movie", "season", or "episode".
+          Set to either "movie" or "series".
         - **year** : str
         - **season** : str
         - **episode** : str
