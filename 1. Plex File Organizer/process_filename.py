@@ -1,6 +1,6 @@
 import re
 
-from data_sets import video_extensions, video_qualities
+from utils.data_sets import video_extensions, video_qualities
 
 
 VE = video_extensions()

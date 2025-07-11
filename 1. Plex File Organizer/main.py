@@ -18,7 +18,7 @@ import os
 
 from colorama import Fore, Back, Style
 
-from colors import Colors
+from utils.colors import Colors
 from process_filename import process_filename, print_pf
 from request_omdb import request_metadata
 

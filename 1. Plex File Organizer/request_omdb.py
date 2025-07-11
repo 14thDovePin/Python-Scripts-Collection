@@ -5,7 +5,7 @@ import os
 from colorama import Fore, Back, Style
 from dotenv import load_dotenv
 
-from colors import Colors
+from utils.colors import Colors
 
 
 load_dotenv()
