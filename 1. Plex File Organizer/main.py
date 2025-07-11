@@ -18,7 +18,7 @@ import os
 
 from colorama import Fore, Back, Style
 
-from colors import init_colors, multiprint
+from colors import Colors
 from process_filename import process_filename, print_pf
 from request_omdb import request_metadata
 
@@ -31,25 +31,15 @@ def main():
     if not TEST_MODE:
         # Prompt Files Directory
         while True:
-            media_directory = input("Enter Media Directory: ")
+            media_directory = C.input("Enter Media Directory: ")
 
             if not os.path.exists(media_directory):
-                print("Invalid Directory!")
+                C.print_error("Invalid Directory!")
             else:
                 break
 
-        print("\nMedia Type")
-        print("1 -> Movie")
-        print("2 -> Series\n")
-
-        # Prompt Type
-        while True:
-            media_type = input("Enter Type: ")
-
-            if media_type == "1" or media_type == "2":
-                break
-            else:
-                print("Invalid Type!")
+        # Extract Directory Name
+        directory_name = media_directory.split('\\').pop()
 
     # Extract Filenames
     if not TEST_MODE:
@@ -58,7 +48,6 @@ def main():
             filenames = files
             break
     else:
-        # For TEST_MODE Only
         # Locate Samples
         directory = __file__.split('\\')[:-1]
         directory = '\\'.join(directory)
@@ -85,8 +74,9 @@ def main():
 
 if __name__ == "__main__":
     # Format Console
-    init_colors()
-    print(Fore.LIGHTGREEN_EX, end='')
+    C = Colors()
+
+    # Run Windows terminal commands.
     commands = [
         "title Plex File Organizer",
         "cls"

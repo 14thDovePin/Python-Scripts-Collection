@@ -5,10 +5,11 @@ import os
 from colorama import Fore, Back, Style
 from dotenv import load_dotenv
 
-from colors import multiprint
+from colors import Colors
 
 
 load_dotenv()
+C = Colors()
 # URL Definitions
 API_KEY = os.getenv('omdb_api')
 OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
@@ -72,25 +73,11 @@ def request_metadata(processed_filename: dict):
     title = ' '.join(title_sequence)
 
     if metadata['Response'] == 'False':
-        multiprint(
-            [
-                Fore.LIGHTRED_EX,
-                'Failed! -- ',
-                Fore.LIGHTGREEN_EX,
-                'Processed ',
-                f'[{title}] '
-            ]
-        )
+        C.print_error("Failed!", end='')
+        print(f" -- Processed [{title}]")
     else:
-        multiprint(
-            [
-                Fore.LIGHTCYAN_EX,
-                'Success! - ',
-                Fore.LIGHTGREEN_EX,
-                'Processed ',
-                f'[{title}] '
-            ]
-        )
+        C.print_success("Success!", end='')
+        print(f" - Processed [{title}]")
 
     # Return Metadata
     return metadata
