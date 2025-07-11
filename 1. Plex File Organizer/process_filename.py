@@ -118,6 +118,6 @@ def process_filename(filename: str, metadata: dict) -> dict:
     final_index = min(indexes)
     word_sequence = word_sequence[:final_index]
 
-    # Save the rough title & return the processed filename
+    # Save sequenced title & return the processed filename
     metadata['title_sequence'] = word_sequence
     return metadata
