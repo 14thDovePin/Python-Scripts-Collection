@@ -23,7 +23,7 @@ from process_filename import process_filename, print_pf
 from request_omdb import request_metadata
 
 
-TEST_MODE = True
+TEST_MODE = False
 
 
 def main():
@@ -41,13 +41,10 @@ def main():
         # Extract Directory Name
         directory_name = media_directory.split('\\').pop()
 
-    # Extract Filenames
-    if not TEST_MODE:
-        filenames = []
-        for _, _, files in os.walk(media_directory):
-            filenames = files
-            break
-    else:
+        # Extract Filenames
+        _, _, filenames = next(os.walk(media_directory))
+
+    if TEST_MODE:
         # Locate Samples
         directory = __file__.split('\\')[:-1]
         directory = '\\'.join(directory)
