@@ -18,23 +18,24 @@ import os
 
 from colorama import Fore, Back, Style
 
-from utils.colors import Colors
-from process_filename import process_filename, print_pf
+from process_filename import process_filename, fn_check
 from request_omdb import request_metadata
+from utils.colors import Colors
+from utils.templates import GenerateTemplate
 
 
 TEST_MODE = False
 
 
 def main():
-    # Prompt User
+    # PROMPT USER
     if not TEST_MODE:
         # Prompt Files Directory
         while True:
-            media_directory = C.input("Enter Media Directory: ")
+            media_directory = c.input("Enter Media Directory: ")
 
             if not os.path.exists(media_directory):
-                C.print_error("Invalid Directory!")
+                c.print_error("Invalid Directory!")
             else:
                 break
 
@@ -56,6 +57,31 @@ def main():
             for i in f.readlines(): raw_string += i
             filenames = json.loads(raw_string)
 
+    # PROCESS TITLE
+    title_metadata = gt.metadata()
+    files_info = []
+    title_sequence = process_filename(directory_name)
+    input(title_sequence)
+
+    # Process Rough Titles for Filenames
+    for file in filenames:
+        # Allow only video files.
+        if not fn_check(file):
+            continue
+
+        file_info = gt.file_info()
+        if not title_sequence:
+            title_sequence = process_filename(file, title_metadata, file_info)
+        else:
+            process_filename(file, title_metadata, file_info)
+
+
+        print(title_metadata)
+        print(file_info)
+        print(title_sequence)
+        input('\tpress')
+
+
     # Cleanup Filename/s
     processed_filenames = [process_filename(i) for i in filenames]
 
@@ -66,8 +92,9 @@ def main():
 
 
 if __name__ == "__main__":
-    # Format Console
-    C = Colors()
+    # Script Setup
+    c = Colors()
+    gt = GenerateTemplate()
 
     # Run Windows terminal commands.
     commands = [
