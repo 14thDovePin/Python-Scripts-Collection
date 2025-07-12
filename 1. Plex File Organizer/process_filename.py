@@ -40,8 +40,8 @@ def process_filename(
     """
     # Patterns
     year_pattern = r'19\d\d|20\d\d'
-    season_pattern = r'[\d\s.]SEASON[\s.]?\d+|[\d\s.]SEASON|[\d\s.]S\d+'
-    episode_pattern = r'[\d\s.]EPISODE[\s.]?\d+|[\d\s.]EPISODE|[\d\s.]EP?\d+'
+    season_pattern = r'[\d\s.]SEASON[\s.]?(\d+)|[\d\s.]S(\d+)'
+    episode_pattern = r'[\d\s.]EPISODE[\s.]?(\d+)|[\d\s.]EP?(\d+)'
     number_pattern = r'\d+'
     enclosed_pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     word_pattern = r'[^. \s]+'
@@ -63,17 +63,19 @@ def process_filename(
         # Extract Season Number
         season = re.search(season_pattern, filename, ignore_case)
         if season:
-            season = season.group(0)
-            number = re.search(number_pattern, season)
-            metadata['season'] = number.group(0)
+            if season.group(1):
+                metadata['season'] = season.group(1)
+            else:
+                metadata['season'] = season.group(2)
 
         # Extract Episode Number
         episode = re.search(episode_pattern, filename, ignore_case)
 
         if episode:
-            episode = episode.group(0)
-            number = re.search(number_pattern, episode)
-            metadata['episode'] = number.group(0)
+            if episode.group(1):
+                metadata['episode'] = episode.group(1)
+            else:
+                metadata['episode'] = episode.group(2)
 
         # Extract File Extension
         for extension in VE:
