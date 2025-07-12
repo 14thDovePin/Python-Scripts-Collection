@@ -15,6 +15,7 @@ Below is the script's procedure. (may change as the script is developed)
 
 import json
 import os
+import pprint
 
 from colorama import Fore, Back, Style
 
@@ -59,15 +60,15 @@ def main():
 
         media_directory = os.getcwd()
 
-    # PROCESS TITLE
-    files_information = []
-    title_sequence = process_filename(directory_name)
+    # PROCESS VIDEO FILES
+    video_files_information = []
+    directory_title_sequence = process_filename(directory_name)
 
     # TODO NOTE
-    # Title Sequence is not constrained.
+    # Title Sequence is not constrained, find a way to solve this.
     # Title can either be in the directory name, filename, or both.
 
-    # Process Rough Titles for Filenames
+    # Process Video Files Information
     for file in filenames:
         # Allow only video files.
         if not fn_check(file):
@@ -77,21 +78,18 @@ def main():
         file_metadata = gt.metadata()
         file_info = gt.file_info()
 
-        process_filename(file, file_metadata, file_info)
+        title_sequence = process_filename(file, file_metadata, file_info)
         file_info['path'] = media_directory
 
-        print(file_metadata)
-        print(file_info)
-        print(title_sequence)
-        input('\tpress')
+        # Store & Append Information
+        vf_information = gt.video_file_information()
+        vf_information['title_sequence'] = title_sequence
+        vf_information['metadata'] = file_metadata
+        vf_information['file_information'] = file_info
+        video_files_information.append(vf_information)
 
+    pprint.pp(video_files_information)
 
-    # Cleanup Filename/s
-    processed_filenames = [process_filename(i) for i in filenames]
-
-    for i in processed_filenames:
-        # print_pf(i)
-        request_metadata(i)
     input("Press Any Key To Exit")
     exit()
 

@@ -1,12 +1,12 @@
 class GenerateTemplate():
     """A class for generating templates."""
 
-    def file_information(self) -> dict:
-        """Generate a full file information dictionary.
+    def video_file_information(self) -> dict:
+        """Generate a video file information dictionary.
 
         Returns
         -------
-        file_information : dict
+        video_file_information : dict
             Dictionary Keys:
             - **title_sequence** : list
             - **metadata** : dict
