@@ -57,11 +57,15 @@ def main():
             for i in f.readlines(): raw_string += i
             filenames = json.loads(raw_string)
 
+        media_directory = os.getcwd()
+
     # PROCESS TITLE
-    title_metadata = gt.metadata()
-    files_info = []
+    files_information = []
     title_sequence = process_filename(directory_name)
-    input(title_sequence)
+
+    # TODO NOTE
+    # Title Sequence is not constrained.
+    # Title can either be in the directory name, filename, or both.
 
     # Process Rough Titles for Filenames
     for file in filenames:
@@ -69,14 +73,14 @@ def main():
         if not fn_check(file):
             continue
 
+        # Process file metadata and information.
+        file_metadata = gt.metadata()
         file_info = gt.file_info()
-        if not title_sequence:
-            title_sequence = process_filename(file, title_metadata, file_info)
-        else:
-            process_filename(file, title_metadata, file_info)
 
+        process_filename(file, file_metadata, file_info)
+        file_info['path'] = media_directory
 
-        print(title_metadata)
+        print(file_metadata)
         print(file_info)
         print(title_sequence)
         input('\tpress')
@@ -89,6 +93,7 @@ def main():
         # print_pf(i)
         request_metadata(i)
     input("Press Any Key To Exit")
+    exit()
 
 
 if __name__ == "__main__":

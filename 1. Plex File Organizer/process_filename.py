@@ -46,7 +46,6 @@ def process_filename(
     pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     word_pattern = r'[^. \s]+'
 
-
     # Store data into dictionaries.
     if metadata and file_info:
         ignore_case = re.IGNORECASE
