@@ -40,10 +40,10 @@ def process_filename(
     """
     # Patterns
     year_pattern = r'19\d\d|20\d\d'
-    season_pattern = r'SEASON[\s.]?\d+|SEASON|S\d+'
+    season_pattern = r'[\d\s.]SEASON[\s.]?\d+|[\d\s.]SEASON|[\d\s.]S\d+'
+    episode_pattern = r'[\d\s.]EPISODE[\s.]?\d+|[\d\s.]EPISODE|[\d\s.]EP?\d+'
     number_pattern = r'\d+'
-    episode_pattern = r'EPISODE[\s.]?\d+|EPISODE|EP?\d+'
-    pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
+    enclosed_pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     word_pattern = r'[^. \s]+'
 
     # Store data into dictionaries.
@@ -90,7 +90,7 @@ def process_filename(
 
         # Remove anything enclosed in () or [], But if it
         # contains the Year, then replace it with it.
-        parenthesized_words = re.findall(pattern, filename)
+        parenthesized_words = re.findall(enclosed_pattern, filename)
 
         for matched_word in parenthesized_words:
             year = re.search(year_pattern, matched_word)
