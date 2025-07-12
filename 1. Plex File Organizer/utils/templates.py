@@ -1,6 +1,25 @@
 class GenerateTemplate():
     """A class for generating templates."""
 
+    def file_information(self) -> dict:
+        """Generate a full file information dictionary.
+
+        Returns
+        -------
+        file_information : dict
+            Dictionary Keys:
+            - **title_sequence** : list
+            - **metadata** : dict
+            - **file_information** : dict
+        """
+
+        return {
+            "title_sequence" : [],
+            "metadata" : {},
+            "file_information" : {}
+        }
+
+
     def metadata(self) -> dict:
         """Generate a metadata dictionary.
 
