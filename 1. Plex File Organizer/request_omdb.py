@@ -80,12 +80,12 @@ def request_metadata(title_sequence: list, year: str=''):
 
     if metadata['Response'] == 'False':
         c.print_error("Failed Processing ", end='')
-        print(f"---- [", end='')
+        print(f"> [", end='')
         c.print_warning(title, end='')
         print("]")
     else:
         c.print_success("Succeeded Processing ", end='')
-        print(f"- [", end='')
+        print(f"> [", end='')
         c.print_warning(title, end='')
         print("]")
 

@@ -84,10 +84,17 @@ def main():
         vf_information['file_information'] = file_info
         video_files_information.append(vf_information)
 
-    sample = request_metadata(directory_title_sequence)
-    pprint.pp(sample)
-    print()
-    pprint.pp(video_files_information)
+    # Request through each unique title sequence.
+    title_sequences = []
+    title_sequences.append(directory_title_sequence)
+
+    for info in video_files_information:
+        ts = info['title_sequence']
+        if ts not in title_sequences:
+            title_sequences.append(ts)
+
+    for i in title_sequences:
+        request_metadata(i)
 
     input("Press Any Key To Exit")
     exit()
