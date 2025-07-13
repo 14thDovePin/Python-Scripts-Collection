@@ -7,20 +7,6 @@ VE = video_extensions()
 VQ = video_qualities()
 
 
-def print_metadata(processed_filename: dict) -> None:
-    # Verbosely print on terminal the processed filename.
-    metadata = processed_filename
-
-    print(f'\nTitle ----------> {metadata['title']}')
-    print(f'Title Sequence--> {metadata['title_sequence']}')
-    print(f'Type -----------> {metadata['type']}')
-    print(f'Year -----------> {metadata['year']}')
-    print(f'Season # -------> {metadata['season']}')
-    print(f'Episode # ------> {metadata['episode']}')
-    print(f'File Type ------> {metadata['file_extension']}')
-    print(f'IMDb ID --------> {metadata['imdb_id']}')
-
-
 def process_filename(
         filename: str,
         metadata: dict=None,
@@ -38,18 +24,18 @@ def process_filename(
         Information regarding file information
         are stored inside the passed dict.
     """
+    ignore_case = re.IGNORECASE
+
     # Patterns
     year_pattern = r'19\d\d|20\d\d'
-    season_pattern = r'[\d\s.]SEASON[\s.]?(\d+)|[\d\s.]S(\d+)'
-    episode_pattern = r'[\d\s.]EPISODE[\s.]?(\d+)|[\d\s.]EP?(\d+)'
+    season_pattern = r'[\d\s.]SEASON[\s.]?(\d+)|SEASON|[\d\s.]S(\d+)'
+    episode_pattern = r'[\d\s.]EPISODE[\s.]?(\d+)|EPISODE|[\d\s.]EP?(\d+)'
     number_pattern = r'\d+'
     enclosed_pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     word_pattern = r'[^. \s]+'
 
     # Store data into dictionaries.
     if metadata and file_info:
-        ignore_case = re.IGNORECASE
-
         # Store Filename
         file_info['filename'] = '.'.join(filename.split('.')[:-1])
 
@@ -128,8 +114,8 @@ def process_filename(
             store_index = True
 
         # Season/Episode #
-        s_check = re.search(season_pattern, word)
-        e_check = re.search(episode_pattern, word)
+        s_check = re.search(season_pattern, word, ignore_case)
+        e_check = re.search(episode_pattern, word, ignore_case)
 
         if s_check or e_check:
             store_index = True

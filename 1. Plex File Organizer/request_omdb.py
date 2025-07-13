@@ -58,10 +58,16 @@ def construct_request(
     return request
 
 
-def request_metadata(processed_filename: dict):
-    """Return the json metadata of a given processed filename."""
-    title_sequence = processed_filename['title_sequence']
-    year = processed_filename['year']
+def request_metadata(title_sequence: list, year: str=''):
+    """Return the json metadata of a given title seqeunce.
+
+    Parameters
+    ----------
+    title_sequence : list
+        A sequenced list of string composing the rough title to search for.
+    year : str
+        The year of the title if there's any.
+    """
 
     if not title_sequence:
         return
@@ -73,11 +79,11 @@ def request_metadata(processed_filename: dict):
     title = ' '.join(title_sequence)
 
     if metadata['Response'] == 'False':
-        C.print_error("Failed!", end='')
-        print(f" -- Processed [{title}]")
+        C.print_error("Failed Processing ", end='')
+        print(f"---- [{title}]")
     else:
-        C.print_success("Success!", end='')
-        print(f" - Processed [{title}]")
+        C.print_success("Succeeded Processing ", end='')
+        print(f"- [{title}]")
 
     # Return Metadata
     return metadata

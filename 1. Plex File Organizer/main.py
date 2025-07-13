@@ -64,10 +64,6 @@ def main():
     video_files_information = []
     directory_title_sequence = process_filename(directory_name)
 
-    # TODO NOTE
-    # Title Sequence is not constrained, find a way to solve this.
-    # Title can either be in the directory name, filename, or both.
-
     # Process Video Files Information
     for file in filenames:
         # Allow only video files.
@@ -88,6 +84,9 @@ def main():
         vf_information['file_information'] = file_info
         video_files_information.append(vf_information)
 
+    sample = request_metadata(directory_title_sequence)
+    pprint.pp(sample)
+    print()
     pprint.pp(video_files_information)
 
     input("Press Any Key To Exit")
