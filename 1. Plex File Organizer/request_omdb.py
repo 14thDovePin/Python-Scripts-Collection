@@ -9,7 +9,7 @@ from utils.colors import Colors
 
 
 load_dotenv()
-C = Colors()
+c = Colors()
 # URL Definitions
 API_KEY = os.getenv('omdb_api')
 OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
@@ -79,11 +79,15 @@ def request_metadata(title_sequence: list, year: str=''):
     title = ' '.join(title_sequence)
 
     if metadata['Response'] == 'False':
-        C.print_error("Failed Processing ", end='')
-        print(f"---- [{title}]")
+        c.print_error("Failed Processing ", end='')
+        print(f"---- [", end='')
+        c.print_warning(title, end='')
+        print("]")
     else:
-        C.print_success("Succeeded Processing ", end='')
-        print(f"- [{title}]")
+        c.print_success("Succeeded Processing ", end='')
+        print(f"- [", end='')
+        c.print_warning(title, end='')
+        print("]")
 
     # Return Metadata
     return metadata

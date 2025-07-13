@@ -28,8 +28,8 @@ def process_filename(
 
     # Patterns
     year_pattern = r'19\d\d|20\d\d'
-    season_pattern = r'[\d\s.]SEASON[\s.]?(\d+)|SEASON|[\d\s.]S(\d+)'
-    episode_pattern = r'[\d\s.]EPISODE[\s.]?(\d+)|EPISODE|[\d\s.]EP?(\d+)'
+    season_pattern = r'[\d\s.]SEASON[\s.]?(\d+)|SEASON|[\d\s.]?S(\d+)'
+    episode_pattern = r'[\d\s.]EPISODE[\s.]?(\d+)|EPISODE|[\d\s.]?EP?(\d+)'
     number_pattern = r'\d+'
     enclosed_pattern = r'[\s.]?\([^\)]+\)|[\s.]?\[[^\]]+\]'
     word_pattern = r'[^. \s]+'
