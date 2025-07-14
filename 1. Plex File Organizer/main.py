@@ -11,13 +11,24 @@ Below is the script's procedure. (may change as the script is developed)
 3. Obtain the title from the movies metadata from OMDb or IMDb.
 4. Format title to Plex's media file namescheming.
 5. Rename all media files.
+
+External Libraries Used:
+  colorama
+  dotenv
+  googlesearch-python
+
+Developer Notes
+I overengineered this a little bit. But that's part
+of trying to implement new things I've learned!
 """
 
 import json
 import os
 import pprint
+import re
 
 from colorama import Fore, Back, Style
+from googlesearch import search
 
 from process_filename import process_filename, fn_check
 from request_omdb import request_metadata
@@ -29,11 +40,22 @@ TEST_MODE = False
 
 
 def main():
+    c.print_colored('PROCESSING MEDIA... ', Fore.LIGHTMAGENTA_EX, end='')
+    print('[Type "', end='')
+    c.print_warning('exit', end='')
+    print('" or "', end='')
+    c.print_warning('quit', end='')
+    print('" to end script...]')
+
     # PROMPT USER
     if not TEST_MODE:
         # Prompt Files Directory
         while True:
             media_directory = c.input("Enter Media Directory: ")
+
+            if media_directory.lower() in ['exit', 'quit']:
+                c.reset()
+                exit()
 
             if not os.path.exists(media_directory):
                 c.print_error("Invalid Directory!")
@@ -85,6 +107,7 @@ def main():
         video_files_information.append(vf_information)
 
     # Request through each unique title sequence.
+    # Prompt user to select the correct title sequence if there are multiple.
     title_sequences = []
     title_sequences.append(directory_title_sequence)
 
@@ -93,11 +116,35 @@ def main():
         if ts not in title_sequences:
             title_sequences.append(ts)
 
-    for i in title_sequences:
-        request_metadata(i)
+    # Grab IMDb IDs by parsing each title with Google.
+    imdb_ids = []
+    imdb_id_pattern = r'\/(tt\d+)\/'
 
-    input("Press Any Key To Exit")
-    exit()
+    for title in title_sequences:
+        full_title = ' '.join(title)
+
+        print("Parsing Title > [", end='')
+        c.print_colored(full_title, Fore.LIGHTMAGENTA_EX, end='')
+        print("] ...")
+
+        search_text = "site:imdb.com " + full_title
+        results = search(search_text)
+
+        # Store each unique results.
+        for result in results:
+            matched = re.search(imdb_id_pattern, result)
+
+            if not matched:
+                continue
+
+            id = matched.group(1)
+
+            if id not in imdb_ids:
+                imdb_ids.append(id)
+
+            break
+
+    print('\n')
 
 
 if __name__ == "__main__":

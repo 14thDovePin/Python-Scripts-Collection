@@ -36,3 +36,9 @@ class Colors:
         print(self.default_color, end='')
 
         return user_input
+
+    def reset(self) -> None:
+        """Reset the color of the console."""
+        print(Fore.RESET)
+        print(Back.RESET)
+        print(Style.RESET_ALL)
