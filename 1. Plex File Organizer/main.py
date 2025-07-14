@@ -144,6 +144,11 @@ def main():
 
             break
 
+    # Parse ID Through OMDb
+    # Check if Movie or Series
+    # If Movie, Construct Final Filename
+    # If Seiries, Test if Beautifulsoup Can Extract Episode Names
+
     print('\n')
 
 
