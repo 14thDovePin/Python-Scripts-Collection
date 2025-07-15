@@ -21,18 +21,14 @@ Developer Notes
 I overengineered this a little bit. But that's part
 of trying to implement new things I've learned!
 """
-
-import json
 import os
-import pprint
 import re
 
-from colorama import Fore, Back, Style
+from colorama import Fore
 from googlesearch import search
 
-from process_filename import process_filename
-from request_omdb import request_metadata
-from utils.check import check_video
+from file_manager import prompt_media_info
+from process_data import process_directory_data, process_filenames_data
 from utils.colors import Colors
 from utils.templates import GenerateTemplate
 
@@ -41,82 +37,12 @@ TEST_MODE = False
 
 
 def main():
-    c.print_colored('PROCESSING MEDIA... ', Fore.LIGHTMAGENTA_EX, end='')
-    print('[Type "', end='')
-    c.print_warning('exit', end='')
-    print('" or "', end='')
-    c.print_warning('quit', end='')
-    print('" to end script...]')
+    # Prompt the user for the information of the media to be used.
+    media_directory, directory_name, filenames = prompt_media_info()
 
-    # PROMPT USER
-    if not TEST_MODE:
-        # Prompt Files Directory
-        while True:
-            media_directory = c.input("Enter Media Directory: ")
-
-            if media_directory.lower() in ['exit', 'quit']:
-                c.reset()
-                exit()
-
-            if not os.path.exists(media_directory):
-                c.print_error("Invalid Directory!")
-            else:
-                break
-
-        # Extract Directory Name
-        directory_name = media_directory.split('\\').pop()
-
-        # Extract Filenames
-        _, _, filenames = next(os.walk(media_directory))
-
-    if TEST_MODE:
-        # Locate Samples
-        directory = __file__.split('\\')[:-1]
-        directory = '\\'.join(directory)
-        directory += '\\samples_ignore.json'
-
-        # Extract Samples
-        with open(directory, 'r') as f:
-            raw_string = ""
-            for i in f.readlines(): raw_string += i
-            filenames = json.loads(raw_string)
-
-        media_directory = os.getcwd()
-
-    # PROCESS MEDIA DATA
-    directory_data = gt.media_data()
-    files_data = []
-
-    # Process Directory Data
-    dir_metadata = gt.metadata()
-    dir_info = gt.file_info()
-
-    title_sequence = process_filename(directory_name, dir_metadata, dir_info)
-    dir_info['path'] = media_directory
-
-    # Store Directory Data
-    directory_data['title_sequence'] = title_sequence
-    directory_data['metadata'] = dir_metadata
-    directory_data['file_information'] = dir_info
-
-    # Process Files Data
-    for file in filenames:
-        # Allow only video files.
-        if not check_video(file):
-            continue
-
-        file_metadata = gt.metadata()
-        file_info = gt.file_info()
-
-        title_sequence = process_filename(file, file_metadata, file_info)
-        file_info['path'] = media_directory
-
-        # Store & Append Information
-        file_data = gt.media_data()
-        file_data['title_sequence'] = title_sequence
-        file_data['metadata'] = file_metadata
-        file_data['file_information'] = file_info
-        files_data.append(file_data)
+    # Process media data.
+    directory_data = process_directory_data(media_directory, directory_name)
+    files_data = process_filenames_data(media_directory, filenames)
 
     # Unify Title Sequences
     title_sequences = []
@@ -156,6 +82,7 @@ def main():
             break
 
     # Parse ID Through OMDb
+    imdb_results = []
     # Check if Movie or Series
     # If Movie, Construct Final Filename
     # If Seiries, Test if Beautifulsoup Can Extract Episode Names
