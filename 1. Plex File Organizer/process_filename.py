@@ -128,12 +128,3 @@ def process_filename(
     word_sequence = word_sequence[:final_index]
 
     return word_sequence
-
-
-def fn_check(filename):
-    """Check if filename is video."""
-    for ext in VE:
-        if ext in filename:
-            return True
-
-    return False

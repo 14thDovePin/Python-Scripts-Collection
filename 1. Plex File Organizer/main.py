@@ -30,8 +30,9 @@ import re
 from colorama import Fore, Back, Style
 from googlesearch import search
 
-from process_filename import process_filename, fn_check
+from process_filename import process_filename
 from request_omdb import request_metadata
+from utils.check import check_video
 from utils.colors import Colors
 from utils.templates import GenerateTemplate
 
@@ -82,14 +83,14 @@ def main():
 
         media_directory = os.getcwd()
 
-    # PROCESS VIDEO FILES
+    # PROCESS FILES METADATA & INFORMATION
     video_files_information = []
     directory_title_sequence = process_filename(directory_name)
 
     # Process Video Files Information
     for file in filenames:
         # Allow only video files.
-        if not fn_check(file):
+        if not check_video(file):
             continue
 
         # Process file metadata and information.
@@ -106,8 +107,7 @@ def main():
         vf_information['file_information'] = file_info
         video_files_information.append(vf_information)
 
-    # Request through each unique title sequence.
-    # Prompt user to select the correct title sequence if there are multiple.
+    # Unify Title Sequences
     title_sequences = []
     title_sequences.append(directory_title_sequence)
 
