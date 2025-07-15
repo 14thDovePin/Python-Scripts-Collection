@@ -83,17 +83,28 @@ def main():
 
         media_directory = os.getcwd()
 
-    # PROCESS FILES METADATA & INFORMATION
-    video_files_information = []
-    directory_title_sequence = process_filename(directory_name)
+    # PROCESS MEDIA DATA
+    directory_data = gt.media_data()
+    files_data = []
 
-    # Process Video Files Information
+    # Process Directory Data
+    dir_metadata = gt.metadata()
+    dir_info = gt.file_info()
+
+    title_sequence = process_filename(directory_name, dir_metadata, dir_info)
+    dir_info['path'] = media_directory
+
+    # Store Directory Data
+    directory_data['title_sequence'] = title_sequence
+    directory_data['metadata'] = dir_metadata
+    directory_data['file_information'] = dir_info
+
+    # Process Files Data
     for file in filenames:
         # Allow only video files.
         if not check_video(file):
             continue
 
-        # Process file metadata and information.
         file_metadata = gt.metadata()
         file_info = gt.file_info()
 
@@ -101,18 +112,18 @@ def main():
         file_info['path'] = media_directory
 
         # Store & Append Information
-        vf_information = gt.video_file_information()
-        vf_information['title_sequence'] = title_sequence
-        vf_information['metadata'] = file_metadata
-        vf_information['file_information'] = file_info
-        video_files_information.append(vf_information)
+        file_data = gt.media_data()
+        file_data['title_sequence'] = title_sequence
+        file_data['metadata'] = file_metadata
+        file_data['file_information'] = file_info
+        files_data.append(file_data)
 
     # Unify Title Sequences
     title_sequences = []
-    title_sequences.append(directory_title_sequence)
+    title_sequences.append(directory_data['title_sequence'])
 
-    for info in video_files_information:
-        ts = info['title_sequence']
+    for file_data in files_data:
+        ts = file_data['title_sequence']
         if ts not in title_sequences:
             title_sequences.append(ts)
 
