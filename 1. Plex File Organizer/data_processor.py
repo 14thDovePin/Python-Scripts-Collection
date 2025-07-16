@@ -9,16 +9,16 @@ def process_directory_data(media_directory: str,
 
     Parameters
     ----------
-    media_directory: str
+    media_directory : str
         Directory of the media to work on.
-    directory_name: list
+    directory_name : list
         Name of the directory of the media to work on.
-    gt: GenerateTemplate
+    gt : GenerateTemplate
         For generating the templates needed to construct the dict.
 
     Returns
     -------
-    directory_data: dict
+    directory_data : dict
         Contains the processed information of the given media.
     """
     # Process Directory Data
@@ -44,16 +44,16 @@ def process_filenames_data(media_directory: str,
 
     Parameters
     ----------
-    media_directory: str
+    media_directory : str
         Directory of the media working on.
-    filenames: list
+    filenames : list
         The list of directories to work on.
-    gt: GenerateTemplate
+    gt : GenerateTemplate
         For generating the templates needed to construct the dict.
 
     Returns
     -------
-    directory_data: dict
+    directory_data : dict
         Contains the processed information of the given media.
     """
     files_data = []
@@ -78,3 +78,29 @@ def process_filenames_data(media_directory: str,
         files_data.append(file_data)
 
     return files_data
+
+
+def unify_title_sequences(directory_data: dict, files_data: dict) -> list:
+    """Return the list of titles sequence given both directory and file data.
+
+    Parameters
+    ----------
+    directory_data : dict
+        The directory data of the media being worked on.
+    files_data : dict
+        The files data of the media being worked on.
+
+    Returns
+    -------
+    titles_sequence : list
+        A list of title sequences.
+    """
+    titles_sequence = []
+    titles_sequence.append(directory_data['title_sequence'])
+
+    for file_data in files_data:
+        ts = file_data['title_sequence']
+        if ts not in titles_sequence:
+            titles_sequence.append(ts)
+
+    return titles_sequence

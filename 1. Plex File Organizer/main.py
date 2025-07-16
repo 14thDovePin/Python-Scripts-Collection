@@ -28,7 +28,11 @@ from colorama import Fore
 from googlesearch import search
 
 from file_manager import prompt_media_info
-from process_data import process_directory_data, process_filenames_data
+from process_data import (
+    process_directory_data,
+    process_filenames_data,
+    unify_title_sequences
+)
 from utils.colors import Colors
 from utils.templates import GenerateTemplate
 
@@ -45,13 +49,7 @@ def main():
     files_data = process_filenames_data(media_directory, filenames)
 
     # Unify Title Sequences
-    title_sequences = []
-    title_sequences.append(directory_data['title_sequence'])
-
-    for file_data in files_data:
-        ts = file_data['title_sequence']
-        if ts not in title_sequences:
-            title_sequences.append(ts)
+    title_sequences = unify_title_sequences(directory_data, files_data)
 
     # Grab IMDb IDs by parsing each title with Google.
     imdb_ids = []
