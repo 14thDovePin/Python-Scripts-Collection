@@ -16,12 +16,12 @@ OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
 
 
 def construct_request(
-        title: list = [],
+        title_sequence: list = [],
         year: str = '',
         type: str = '',
         imdb_id: str = '',
         return_type : str='json'
-    ) -> str:
+        ) -> str:
     """Return a constructed url that can request with OMDb.
 
     Parameters
@@ -41,11 +41,11 @@ def construct_request(
     }
 
     # Construct the Title
-    if not title:
+    if not title_sequence:
         combined_title = ''
     else:
-        combined_title = title[0]
-        for word in title[1:]:
+        combined_title = title_sequence[0]
+        for word in title_sequence[1:]:
             combined_title += '+' + word
 
     PARAMETERS['title'] += combined_title
@@ -62,20 +62,36 @@ def construct_request(
     return request
 
 
-def request_metadata(title_sequence: list=[], year: str='', imdb_id: str=''):
+# def request_metadata(title_sequence: list=[], year: str='', imdb_id: str=''):
+def request_metadata(
+        title_sequence: list = [],
+        year: str = '',
+        type: str = '',
+        imdb_id: str = '',
+        return_type : str='json'
+        ) -> dict:
     """Return the json metadata of a given title seqeunce or imdb id.
 
     Parameters
     ----------
     title_sequence : list
-        A sequenced list of string composing the rough title to search for.
+        A sequenced list of string composing the *rough* title to search for.
     year : str
-        The year of the title if there's any.
+        The year of the title.
+    type : str
+        The type of the show. "movie", "series" or "episode".
     imdb_id: str
         The IMDb ID of the given movie or series.
+    return_type : str
     """
     # Get Metadata
-    url = construct_request(title=title_sequence, year=year, imdb_id=imdb_id)
+    url = construct_request(
+        title_sequence,
+        year,
+        type,
+        imdb_id,
+        return_type
+    )
     metadata = requests.get(url).json()
 
     if title_sequence:
