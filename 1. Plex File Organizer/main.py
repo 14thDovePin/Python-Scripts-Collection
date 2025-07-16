@@ -22,16 +22,13 @@ I overengineered this a little bit. But that's part
 of trying to implement new things I've learned!
 """
 import os
-import re
-
-from colorama import Fore
-from googlesearch import search
 
 from file_manager import prompt_media_info
 from data_processor import (
     process_directory_data,
     process_filenames_data,
-    unify_title_sequences
+    unify_title_sequences,
+    parse_imdb_ids
 )
 from request_manager import is_movie
 from utils.colors import Colors
@@ -53,32 +50,7 @@ def main():
     title_sequences = unify_title_sequences(directory_data, files_data)
 
     # Grab IMDb IDs by parsing each title with Google.
-    imdb_ids = []
-    imdb_id_pattern = r'\/(tt\d+)\/'
-
-    for title in title_sequences:
-        full_title = ' '.join(title)
-
-        print("Parsing Title > [", end='')
-        c.print_colored(full_title, Fore.LIGHTMAGENTA_EX, end='')
-        print("] ...")
-
-        search_text = "site:imdb.com " + full_title
-        results = search(search_text)
-
-        # Store each unique results.
-        for result in results:
-            matched = re.search(imdb_id_pattern, result)
-
-            if not matched:
-                continue
-
-            id = matched.group(1)
-
-            if id not in imdb_ids:
-                imdb_ids.append(id)
-
-            break
+    imdb_ids = parse_imdb_ids(title_sequences)
 
     for id in imdb_ids:
         check = is_movie(id)

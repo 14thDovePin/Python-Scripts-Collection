@@ -1,4 +1,10 @@
+import re
+
+from colorama import Fore
+from googlesearch import search
+
 from file_manager import process_filename, check_video
+from utils.colors import Colors
 from utils.templates import GenerateTemplate as GT
 
 
@@ -104,3 +110,37 @@ def unify_title_sequences(directory_data: dict, files_data: dict) -> list:
             titles_sequence.append(ts)
 
     return titles_sequence
+
+
+def parse_imdb_ids(title_sequences: list, clr: Colors=Colors()) -> list:
+    """Returns a list of IMDb IDs based on a given list of title squence."""
+    imdb_ids = []
+    imdb_id_pattern = r'\/(tt\d+)\/'
+
+    # Extract ID
+    for title in title_sequences:
+        full_title = ' '.join(title)
+
+        print("Parsing Title > [", end='')
+        clr.print_colored(full_title, Fore.LIGHTMAGENTA_EX, end='')
+        print("] ...")
+
+        search_text = "site:imdb.com " + full_title
+        results = search(search_text)
+
+        # Store Unique Results.
+        for result in results:
+            matched = re.search(imdb_id_pattern, result)
+
+            if not matched:
+                continue
+
+            id = matched.group(1)
+
+            if id not in imdb_ids:
+                imdb_ids.append(id)
+
+            break
+
+    # Return IDs
+    return imdb_ids
