@@ -28,11 +28,12 @@ from colorama import Fore
 from googlesearch import search
 
 from file_manager import prompt_media_info
-from process_data import (
+from data_processor import (
     process_directory_data,
     process_filenames_data,
     unify_title_sequences
 )
+from request_manager import is_movie
 from utils.colors import Colors
 from utils.templates import GenerateTemplate
 
@@ -78,6 +79,11 @@ def main():
                 imdb_ids.append(id)
 
             break
+
+    for id in imdb_ids:
+        check = is_movie(id)
+        result = "Movie" if check else "Series"
+        print(f'ID [{id}] > {result}')
 
     # Parse ID Through OMDb
     imdb_results = []
