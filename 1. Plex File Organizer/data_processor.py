@@ -1,9 +1,11 @@
 import re
 
+import cutie
 from colorama import Fore
 from googlesearch import search
 
 from file_manager import process_filename, check_video
+from request_manager import request_metadata
 from utils.colors import Colors
 from utils.templates import GenerateTemplate as GT
 
@@ -144,3 +146,22 @@ def parse_imdb_ids(title_sequences: list, clr: Colors=Colors()) -> list:
 
     # Return IDs
     return imdb_ids
+
+
+def resolve_ids(imdb_ids: list, clr: Colors=Colors()) -> str:
+    """Returns the chosen IMDb."""
+    if len(imdb_ids) == 1:
+        return imdb_ids[0]
+
+    # Resolve multiple IDs by confirming with the user.
+    titles = []
+    clr.print_warning("Multiple IDs Found!")
+
+    for id in imdb_ids:
+        results = request_metadata(imdb_id=id)
+        titles.append(results["Title"])
+
+    print('Select The Correct ID:')
+    final_id = imdb_ids[cutie.select(titles)]
+
+    return final_id

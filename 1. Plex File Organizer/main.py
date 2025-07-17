@@ -25,12 +25,13 @@ import os
 
 from file_manager import prompt_media_info
 from data_processor import (
+    parse_imdb_ids,
     process_directory_data,
     process_filenames_data,
-    unify_title_sequences,
-    parse_imdb_ids
+    resolve_ids,
+    unify_title_sequences
 )
-from request_manager import is_movie
+from request_manager import check_media_type
 from utils.colors import Colors
 from utils.templates import GenerateTemplate
 
@@ -52,25 +53,19 @@ def main():
     # Grab IMDb IDs by parsing each title with Google.
     imdb_ids = parse_imdb_ids(title_sequences)
 
-    for id in imdb_ids:
-        check = is_movie(id)
-        result = "Movie" if check else "Series"
-        print(f'ID [{id}] > {result}')
+    # Resolve final imdb id if there are multiple and check its type.
+    final_id = resolve_ids(imdb_ids)
+    media_type = check_media_type(final_id)
 
     # Parse ID Through OMDb
-    imdb_results = []
     # Check if Movie or Series
     # If Movie, Construct Final Filename
     # If Seiries, Test if Beautifulsoup Can Extract Episode Names
 
-    print('\n')
+    print()
 
 
 if __name__ == "__main__":
-    # Script Setup
-    c = Colors()
-    gt = GenerateTemplate()
-
     # Run Windows terminal commands.
     commands = [
         "title Plex File Organizer",

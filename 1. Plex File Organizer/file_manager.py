@@ -192,8 +192,9 @@ def process_filename(filename: str, metadata: dict=None,
         if store_index:
             indexes.append(word_sequence.index(word))
 
-    final_index = min(indexes)
-    word_sequence = word_sequence[:final_index]
+    if indexes:
+        final_index = min(indexes)
+        word_sequence = word_sequence[:final_index]
 
     return word_sequence
 

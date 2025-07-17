@@ -15,53 +15,6 @@ API_KEY = os.getenv('omdb_api')
 OMDB_BASE_URL = 'https://www.omdbapi.com/?apikey='
 
 
-def construct_request(
-        title_sequence: list = [],
-        year: str = '',
-        type: str = '',
-        imdb_id: str = '',
-        return_type : str='json'
-        ) -> str:
-    """Return a constructed url that can request with OMDb.
-
-    Parameters
-        title: ['title', 'of', 'the', 'show']
-        year: Year released
-        type: 'movie', 'series', or 'episode'
-        imdb_id: IMDb ID of the show
-        return_type: 'json' or 'xml'
-    """
-    # Integrate Parameters
-    PARAMETERS = {
-        'title' : 't=',
-        'year' : 'y=',
-        'type' : 'type=',  # [movie, series, episode]
-        'imdb_id' : 'i=',
-        'return_type' : 'r='  # [json, xml]
-    }
-
-    # Construct the Title
-    if not title_sequence:
-        combined_title = ''
-    else:
-        combined_title = title_sequence[0]
-        for word in title_sequence[1:]:
-            combined_title += '+' + word
-
-    PARAMETERS['title'] += combined_title
-    PARAMETERS['year'] += year
-    PARAMETERS['type'] += type
-    PARAMETERS['imdb_id'] += imdb_id
-    PARAMETERS['return_type'] += return_type
-
-    # Construct Request
-    request = OMDB_BASE_URL + API_KEY
-    for param in PARAMETERS.values():
-        request += '&' + param
-
-    return request
-
-
 # def request_metadata(title_sequence: list=[], year: str='', imdb_id: str=''):
 def request_metadata(
         title_sequence: list = [],
@@ -115,16 +68,55 @@ def request_metadata(
     return metadata
 
 
-def is_movie(imdb_id) -> bool:
-    """Check a given IMDb ID if its a movie or a series."""
+def construct_request(
+        title_sequence: list = [],
+        year: str = '',
+        type: str = '',
+        imdb_id: str = '',
+        return_type : str='json'
+        ) -> str:
+    """Return a constructed url that can request with OMDb.
+
+    Parameters
+        title: ['title', 'of', 'the', 'show']
+        year: Year released
+        type: 'movie', 'series', or 'episode'
+        imdb_id: IMDb ID of the show
+        return_type: 'json' or 'xml'
+    """
+    # Integrate Parameters
+    PARAMETERS = {
+        'title' : 't=',
+        'year' : 'y=',
+        'type' : 'type=',  # [movie, series, episode]
+        'imdb_id' : 'i=',
+        'return_type' : 'r='  # [json, xml]
+    }
+
+    # Construct the Title
+    if not title_sequence:
+        combined_title = ''
+    else:
+        combined_title = title_sequence[0]
+        for word in title_sequence[1:]:
+            combined_title += '+' + word
+
+    PARAMETERS['title'] += combined_title
+    PARAMETERS['year'] += year
+    PARAMETERS['type'] += type
+    PARAMETERS['imdb_id'] += imdb_id
+    PARAMETERS['return_type'] += return_type
+
+    # Construct Request
+    request = OMDB_BASE_URL + API_KEY
+    for param in PARAMETERS.values():
+        request += '&' + param
+
+    return request
+
+
+def check_media_type(imdb_id) -> bool:
+    """Return the type of a given IMDb ID."""
     metadata = request_metadata(imdb_id=imdb_id)
 
-    if metadata['Response'] == 'False':
-        return None
-
-    check = metadata['Type'] == "movie"
-
-    if check:
-        return True
-
-    return False
+    return metadata["Type"]
