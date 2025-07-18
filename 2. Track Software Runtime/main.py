@@ -34,7 +34,8 @@ CYCLE_TIME = 2
 PROGRAMS = [
     "Chrome",
     "Notepad",
-    "Steam"
+    "Steam",
+    "Sample"
 ]
 DATA_FILEPATH = os.path.join(
     os.getenv("userprofile"),
@@ -53,8 +54,8 @@ def main():
         for program in PROGRAMS:
             build_data(program.lower(), data)
 
-        print("Creating Data File...")
         atomnic_write(data)
+        print("Data File Created!")
 
     # Open Data
     with open(FULL_FILEPATH, 'r') as f:
@@ -68,17 +69,29 @@ def main():
         if program.lower() not in data.keys():
             build_data(program, data)
             atomnic_write(data)
-
-    input()
+            print("Data File Updated!")
 
     # Scan process & update seconds per pass.
+    print("Script Running...")
     while True:
+        update = False
+
         for program in data.keys():
             process = find_process(program)
-            if process:
-                print("Success")
-            else:
-                print("Fail")
+
+            if not process:
+                continue
+
+            # Update time data of process.
+            update = True
+            current_program = data[program]
+            current_program['raw_seconds'] += CYCLE_TIME
+            process_time(current_program)
+
+        # Write Data
+        if update:
+            atomnic_write(data)
+            update = False
 
         # Rest
         time.sleep(CYCLE_TIME)
@@ -114,7 +127,6 @@ def atomnic_write(data: dict) -> None:
         f.writelines(write_data)
 
     os.replace(temp, FULL_FILEPATH)
-    print('Data Updated!')
 
 
 def find_process(process_name: str) -> psutil.Process:
@@ -136,9 +148,9 @@ def find_process(process_name: str) -> psutil.Process:
     return None
 
 
-def process_time(seconds: int, data: dict) -> None:
+def process_time(data: dict) -> None:
     """Converts raw seconds to their respective format to insert in a give dict data."""
-    gm_time = time.gmtime(seconds)
+    seconds = data['raw_seconds']
 
     # Calculate Raw Time
     raw_mins = seconds // 60
