@@ -30,11 +30,11 @@ import psutil
 
 
 # The list of programs the user want's to time track.
+CYCLE_TIME = 2
 PROGRAMS = [
     "Chrome",
-    "Discord",
-    "Steam",
-    "Notepad"
+    "Notepad",
+    "Steam"
 ]
 DATA_FILEPATH = os.path.join(
     os.getenv("userprofile"),
@@ -47,14 +47,14 @@ FULL_FILEPATH = os.path.join(DATA_FILEPATH, DATA_FILENAME)
 def main():
     """Main function of the script"""
     # Create data json file if it doesn't exist yet.
-    if not os.path.exists(DATA_FILEPATH):
+    if not os.path.exists(FULL_FILEPATH):
         # Create Data
         data = {}
         for program in PROGRAMS:
             build_data(program.lower(), data)
 
-        write(data)
-        print("Data File Created!")
+        print("Creating Data File...")
+        atomnic_write(data)
 
     # Open Data
     with open(FULL_FILEPATH, 'r') as f:
@@ -67,19 +67,21 @@ def main():
     for program in PROGRAMS:
         if program.lower() not in data.keys():
             build_data(program, data)
-            write(data)
+            atomnic_write(data)
 
-    print("Data Updated!")
     input()
 
-    process = find_process("Chrome")
-    if process:
-        print("Success")
-    else:
-        print("Fail")
+    # Scan process & update seconds per pass.
+    while True:
+        for program in data.keys():
+            process = find_process(program)
+            if process:
+                print("Success")
+            else:
+                print("Fail")
 
-    # Rest
-    time.sleep(5)
+        # Rest
+        time.sleep(CYCLE_TIME)
 
 
 def build_data(process_name: str, data: dict) -> None:
@@ -101,14 +103,18 @@ def build_data(process_name: str, data: dict) -> None:
     }
 
 
-def write(data: dict) -> None:
+def atomnic_write(data: dict) -> None:
     """Overwrites data into the data file."""
     # Create File and/or Overwrite Data
     write_data = json.dumps(data, indent=4)
+    temp = FULL_FILEPATH + '.temp'
     os.makedirs(DATA_FILEPATH, exist_ok=True)
 
-    with open(FULL_FILEPATH, 'w') as f:
+    with open(temp, 'w') as f:
         f.writelines(write_data)
+
+    os.replace(temp, FULL_FILEPATH)
+    print('Data Updated!')
 
 
 def find_process(process_name: str) -> psutil.Process:
