@@ -23,13 +23,42 @@ I might add extra features that allows integration and tracking of more than
 a single program.
 """
 import json
+import os
 import time
 
 import psutil
 
 
+# The list of programs the user want's to time track.
+PROGRAMS = [
+    "Chrome",
+    "Discord"
+]
+DATA_FILEPATH = os.path.join(
+    os.getenv("userprofile"),
+    r'Documents\Software Runtime Tracker'
+)
+DATA_FILENAME = 'data.json'
+FULL_FILEPATH = os.path.join(DATA_FILEPATH, DATA_FILENAME)
+
+
 def main():
     """Main function of the script"""
+    # Create data json file if it doesn't exist yet.
+    if not os.path.exists(DATA_FILEPATH):
+        # Create Data
+        data = {}
+        for program in PROGRAMS:
+            build_data(program.lower(), data)
+
+        # Create File & Write Data
+        write_data = json.dumps(data, indent=4)
+        os.mkdir(DATA_FILEPATH)
+
+        with open(FULL_FILEPATH, 'w') as f:
+            f.writelines(write_data)
+
+    input('Success')
 
     process = find_process("Chrome")
     if process:
@@ -75,7 +104,7 @@ def build_data(process_name: str, data: dict) -> None:
         "days" : int(),
         "months" : int(),
         "years" : int(),
-        "time_elapsed" : int()
+        "time_elapsed" : str()
     }
 
 
@@ -90,7 +119,6 @@ def process_time(seconds: int, data: dict) -> None:
     raw_months = raw_mins // 43830
     raw_years = raw_mins // 525960
 
-    data["raw_seconds"] = seconds
     data["raw_minutes"] = raw_mins
     data["raw_hours"] = raw_hours
     data["raw_days"] = raw_days
@@ -120,8 +148,11 @@ def process_time(seconds: int, data: dict) -> None:
     data["months"] = months
     data["years"] = years
 
+    time_elapsed = f"{years} Year/s, {months} Month/s, {days} Day/s, "
+    time_elapsed += f"{hours} Hour/s, {minutes} Minute/s, {seconds} Seconds"
+
+    data["time_elapsed"] = time_elapsed
+
 
 if __name__ == "__main__":
-    # Run Script
-    while True:
-        main()
+    main()
