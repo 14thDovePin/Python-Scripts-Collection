@@ -22,6 +22,7 @@ I'm going to make this script for a specific case for now, in the future
 I might add extra features that allows integration and tracking of more than
 a single program.
 """
+import json
 from time import sleep
 
 import psutil
@@ -30,9 +31,33 @@ import psutil
 def main():
     """Main function of the script"""
 
+    process = find_process("Chrome")
+    if process:
+        print("Success")
+    else:
+        print("Fail")
 
     # Rest
     sleep(5)
+
+
+def find_process(process_name: str) -> psutil.Process:
+    """Return a process on a given process name."""
+    # Scan through each process.
+    process_numbers = psutil.pids()
+
+    for pn in process_numbers:
+        try:
+            process = psutil.Process(pn)
+
+            # Check if the given process name is inside the process.
+            if process_name.lower() in process.name().lower():
+                return process
+
+        except:
+            pass
+
+    return None
 
 
 if __name__ == "__main__":
