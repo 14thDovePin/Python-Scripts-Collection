@@ -24,6 +24,7 @@ a single program.
 """
 import json
 import os
+import shutil
 import time
 
 import psutil
@@ -56,6 +57,9 @@ def main():
 
         atomnic_write(data)
         print("Data File Created!")
+
+    # Backup Data
+    shutil.copy(FULL_FILEPATH, FULL_FILEPATH+'.bak')
 
     # Open Data
     with open(FULL_FILEPATH, 'r') as f:
