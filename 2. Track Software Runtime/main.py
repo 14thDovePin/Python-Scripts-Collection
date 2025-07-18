@@ -78,6 +78,8 @@ def main():
     # Scan process & update seconds per pass.
     print("Script Running...")
     while True:
+        # Rest
+        time.sleep(CYCLE_TIME)
         update = False
 
         for program in data.keys():
@@ -96,9 +98,6 @@ def main():
         if update:
             atomnic_write(data)
             update = False
-
-        # Rest
-        time.sleep(CYCLE_TIME)
 
 
 def build_data(process_name: str, data: dict) -> None:
