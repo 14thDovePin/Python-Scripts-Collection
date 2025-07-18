@@ -32,7 +32,9 @@ import psutil
 # The list of programs the user want's to time track.
 PROGRAMS = [
     "Chrome",
-    "Discord"
+    "Discord",
+    "Steam",
+    "Notepad"
 ]
 DATA_FILEPATH = os.path.join(
     os.getenv("userprofile"),
@@ -51,14 +53,24 @@ def main():
         for program in PROGRAMS:
             build_data(program.lower(), data)
 
-        # Create File & Write Data
-        write_data = json.dumps(data, indent=4)
-        os.mkdir(DATA_FILEPATH)
+        write(data)
+        print("Data File Created!")
 
-        with open(FULL_FILEPATH, 'w') as f:
-            f.writelines(write_data)
+    # Open Data
+    with open(FULL_FILEPATH, 'r') as f:
+        raw_data = ''.join(f.readlines())
+        data = json.loads(raw_data)
 
-    input('Success')
+    print("Data Loaded!")
+
+    # Append new programs to the data.
+    for program in PROGRAMS:
+        if program.lower() not in data.keys():
+            build_data(program, data)
+            write(data)
+
+    print("Data Updated!")
+    input()
 
     process = find_process("Chrome")
     if process:
@@ -68,25 +80,6 @@ def main():
 
     # Rest
     time.sleep(5)
-
-
-def find_process(process_name: str) -> psutil.Process:
-    """Return a process on a given process name."""
-    # Scan through each process.
-    process_numbers = psutil.pids()
-
-    for pn in process_numbers:
-        try:
-            process = psutil.Process(pn)
-
-            # Check if the given process name is inside the process.
-            if process_name.lower() in process.name().lower():
-                return process
-
-        except:
-            pass
-
-    return None
 
 
 def build_data(process_name: str, data: dict) -> None:
@@ -106,6 +99,35 @@ def build_data(process_name: str, data: dict) -> None:
         "years" : int(),
         "time_elapsed" : str()
     }
+
+
+def write(data: dict) -> None:
+    """Overwrites data into the data file."""
+    # Create File and/or Overwrite Data
+    write_data = json.dumps(data, indent=4)
+    os.makedirs(DATA_FILEPATH, exist_ok=True)
+
+    with open(FULL_FILEPATH, 'w') as f:
+        f.writelines(write_data)
+
+
+def find_process(process_name: str) -> psutil.Process:
+    """Return a process on a given process name."""
+    # Scan through each process.
+    process_numbers = psutil.pids()
+
+    for pn in process_numbers:
+        try:
+            process = psutil.Process(pn)
+
+            # Check if the given process name is inside the process.
+            if process_name.lower() in process.name().lower():
+                return process
+
+        except:
+            pass
+
+    return None
 
 
 def process_time(seconds: int, data: dict) -> None:
