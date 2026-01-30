@@ -6,3 +6,5 @@ Each script should have a folder of its own and a `main.py` file to execute it. 
 That's all!
 ## Script Tracking
 1. Plex File Organizer
+2. Track Software Runtime
+3. Periodic Get Reqeust
