@@ -32,9 +32,12 @@ def main(interval=60):
 
     # Start uptime push request loop.
     while True:
-        post(URL)
+        try:
+            post(URL)
+        except:
+            print(f"POST failed. Retrying in {interval} seconds.")
         sleep(interval)
 
 
 if __name__ == "__main__":
-    main(60)
+    main(50)
