@@ -5,6 +5,7 @@ Each script should have a folder of its own and a `main.py` file to execute it. 
 
 That's all!
 ## Script Tracking
-1. Plex File Organizer
+1. Plex File Organizer (Deprecated as of March 22, 2026)
+    - Migrated the project into its own [repository](https://github.com/14thDovePin/Media-File-Organizer).
 2. Track Software Runtime
 3. Periodic Get Reqeust
